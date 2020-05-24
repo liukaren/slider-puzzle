@@ -1,0 +1,10 @@
+$tileSize: 100px;
+$borderColor: #ccc;
+
+.tile {
+  border: 1px solid $borderColor;
+  cursor: pointer;
+  display: inline-block;
+  height: $tileSize;
+  width: $tileSize;
+}
