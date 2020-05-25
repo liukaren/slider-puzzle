@@ -1,10 +1,34 @@
 $tileSize: 100px;
 $borderColor: #ccc;
+$transition: 500ms;
 
 .tile {
-  border: 1px solid $borderColor;
-  cursor: pointer;
   display: inline-block;
+  user-select: none;
+
   height: $tileSize;
   width: $tileSize;
+
+  border: 1px solid transparent; // For consistent sizing
+  &.nonEmpty {
+    border: 1px solid $borderColor;
+    cursor: pointer;
+  }
+
+  &.slideUp {
+    transition: transform $transition;
+    transform: translateY(-100%);
+  }
+  &.slideDown {
+    transition: transform $transition;
+    transform: translateY(100%);
+  }
+  &.slideLeft {
+    transition: transform $transition;
+    transform: translateX(-100%);
+  }
+  &.slideRight {
+    transition: transform $transition;
+    transform: translateX(100%);
+  }
 }
