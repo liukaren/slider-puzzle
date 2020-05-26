@@ -16,6 +16,7 @@ function generateBoard(dimension) {
 }
 
 const ANIMATION_MS = 500;
+const AUDIO_DELAY_MS = 300;
 
 export default function Board({ dimension }) {
   let [board, setBoard] = React.useState(generateBoard(dimension));
@@ -25,6 +26,10 @@ export default function Board({ dimension }) {
   let [animation, setAnimation] = React.useState(null);
   let [animatingTileRow, setAnimatingTileRow] = React.useState(null);
   let [animatingTileCol, setAnimatingTileCol] = React.useState(null);
+
+  const sound = React.useMemo(() => {
+    return document.getElementById('sound-tile');
+  }, []);
 
   const swapTiles = React.useCallback(
     (row1, col1, row2, col2) => {
@@ -38,20 +43,30 @@ export default function Board({ dimension }) {
 
   const moveTile = React.useCallback(
     (row, col, animation) => {
+      // Play animation
       setAnimatingTileRow(row);
       setAnimatingTileCol(col);
       setAnimation(animation);
+
+      // Play sound (after small delay)
       setTimeout(() => {
+        sound.currentTime = 0;
+        sound.play();
+      }, AUDIO_DELAY_MS);
+
+      setTimeout(() => {
+        // Stop animation
         setAnimatingTileRow(null);
         setAnimatingTileCol(null);
         setAnimation(null);
 
+        // Update state
         swapTiles(row, col, blankRow, blankCol);
         setBlankRow(row);
         setBlankCol(col);
       }, ANIMATION_MS);
     },
-    [swapTiles, blankRow, blankCol]
+    [swapTiles, blankRow, blankCol, sound]
   );
 
   const onClick = React.useCallback(
