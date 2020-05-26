@@ -92,7 +92,7 @@ export default function Board({ dimension }) {
   return (
     <div>
       {board.map((rowValues, row) => (
-        <div key={row}>
+        <div className={styles.row} key={row}>
           {rowValues.map((tile, col) => {
             // Where this tile would be if it were in the winning position
             const targetRow = Math.floor((tile - 1) / dimension);
@@ -125,7 +125,7 @@ export default function Board({ dimension }) {
                       }
                     : undefined
                 }>
-                {tile}
+                {tile !== 0 && <div className={styles.number}>{tile}</div>}
               </div>
             );
           })}

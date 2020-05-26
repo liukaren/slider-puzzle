@@ -1,0 +1,9 @@
+$tileSize: 100px;
+$numberSize: 50px;
+$transition: 500ms;
+
+@mixin centerChildren() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

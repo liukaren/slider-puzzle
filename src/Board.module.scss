@@ -1,9 +1,10 @@
-$tileSize: 100px;
-$borderColor: #ccc;
-$transition: 500ms;
+@import 'constants.scss';
+
+.row {
+  display: flex;
+}
 
 .tile {
-  display: inline-block;
   user-select: none;
 
   height: $tileSize;
@@ -11,8 +12,25 @@ $transition: 500ms;
 
   border: 1px solid transparent; // For consistent sizing
   &.nonEmpty {
-    border: 1px solid $borderColor;
+    box-shadow: inset -4px -4px 5px 0px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      box-shadow: inset 4px 4px 10px rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  @include centerChildren();
+  & > .number {
+    font-size: 40px;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   }
 
   &.slideUp {
