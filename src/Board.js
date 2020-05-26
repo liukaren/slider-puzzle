@@ -3,7 +3,27 @@ import React from 'react';
 import styles from './Board.module.scss';
 import backgroundImage from './images/bg.jpg';
 
-function generateBoard(dimension) {
+function swapTiles(board, row1, col1, row2, col2) {
+  const temp = board[row1][col1];
+  board[row1][col1] = board[row2][col2];
+  board[row2][col2] = temp;
+}
+
+function shuffleBoard(board) {
+  const dimension = board.length;
+  // Fisher-Yates shuffle, adapted for a 2-d array
+  for (let i = dimension * dimension - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    const iRow = Math.floor(i / dimension);
+    const iCol = i % dimension;
+    const jRow = Math.floor(j / dimension);
+    const jCol = j % dimension;
+    swapTiles(board, iRow, iCol, jRow, jCol);
+  }
+  return board;
+}
+
+function generateSolved(dimension) {
   let board = new Array(dimension);
   for (let row = 0; row < dimension; row++) {
     board[row] = new Array(dimension);
@@ -15,11 +35,15 @@ function generateBoard(dimension) {
   return board;
 }
 
+function generateRandom(dimension) {
+  return shuffleBoard(generateSolved(dimension));
+}
+
 const ANIMATION_MS = 500;
 const AUDIO_DELAY_MS = 300;
 
 export default function Board({ dimension }) {
-  let [board, setBoard] = React.useState(generateBoard(dimension));
+  let [board, setBoard] = React.useState(generateSolved(dimension));
   let [blankRow, setBlankRow] = React.useState(dimension - 1);
   let [blankCol, setBlankCol] = React.useState(dimension - 1);
 
@@ -30,16 +54,6 @@ export default function Board({ dimension }) {
   const sound = React.useMemo(() => {
     return document.getElementById('sound-tile');
   }, []);
-
-  const swapTiles = React.useCallback(
-    (row1, col1, row2, col2) => {
-      const temp = board[row1][col1];
-      board[row1][col1] = board[row2][col2];
-      board[row2][col2] = temp;
-      setBoard(board); // TODO: does this trigger a re-render?
-    },
-    [board]
-  );
 
   const moveTile = React.useCallback(
     (row, col, animation) => {
@@ -61,15 +75,16 @@ export default function Board({ dimension }) {
         setAnimation(null);
 
         // Update state
-        swapTiles(row, col, blankRow, blankCol);
+        swapTiles(board, row, col, blankRow, blankCol);
+        setBoard(board); // TODO: does this trigger a re-render?
         setBlankRow(row);
         setBlankCol(col);
       }, ANIMATION_MS);
     },
-    [swapTiles, blankRow, blankCol, sound]
+    [board, blankRow, blankCol, sound]
   );
 
-  const onClick = React.useCallback(
+  const onClickTile = React.useCallback(
     (row, col) => {
       if (animation) return; // Ignore clicks during animation
 
@@ -87,50 +102,74 @@ export default function Board({ dimension }) {
     [moveTile, animation, blankCol, blankRow]
   );
 
+  const onClickShuffle = React.useCallback(() => {
+    const randomBoard = generateRandom(dimension);
+    setBoard(randomBoard);
+    for (let row = 0; row < dimension; row++) {
+      for (let col = 0; col < dimension; col++) {
+        if (randomBoard[row][col] === 0) {
+          setBlankRow(row);
+          setBlankCol(col);
+          return;
+        }
+      }
+    }
+  }, [dimension]);
+
   const backgroundSize = 100 * dimension;
 
   return (
-    <div>
-      {board.map((rowValues, row) => (
-        <div className={styles.row} key={row}>
-          {rowValues.map((tile, col) => {
-            // Where this tile would be if it were in the winning position
-            const targetRow = Math.floor((tile - 1) / dimension);
-            const targetCol = (tile - 1) % dimension;
+    <div className={styles.wrapper}>
+      <div>
+        {board.map((rowValues, row) => (
+          <div className={styles.row} key={row}>
+            {rowValues.map((tile, col) => {
+              // Where this tile would be if it were in the winning position
+              const targetRow = Math.floor((tile - 1) / dimension);
+              const targetCol = (tile - 1) % dimension;
 
-            // Use winning position to calculate background
-            const backgroundPositionX = Math.ceil(-100 * targetCol);
-            const backgroundPositionY = Math.ceil(-100 * targetRow);
+              // Use winning position to calculate background
+              const backgroundPositionX = Math.ceil(-100 * targetCol);
+              const backgroundPositionY = Math.ceil(-100 * targetRow);
 
-            return (
-              <div
-                className={cn([
-                  styles.tile,
-                  {
-                    [styles.nonEmpty]: tile !== 0,
-                    [animation]:
-                      animation &&
-                      animatingTileRow === row &&
-                      animatingTileCol === col
-                  }
-                ])}
-                key={col}
-                onClick={() => onClick(row, col)}
-                style={
-                  tile !== 0
-                    ? {
-                        backgroundImage: `url("${backgroundImage}")`,
-                        backgroundSize: `${backgroundSize}%`,
-                        backgroundPosition: `${backgroundPositionX}% ${backgroundPositionY}%`
-                      }
-                    : undefined
-                }>
-                {tile !== 0 && <div className={styles.number}>{tile}</div>}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+              return (
+                <div
+                  className={cn([
+                    styles.tile,
+                    {
+                      [styles.nonEmpty]: tile !== 0,
+                      [animation]:
+                        animation &&
+                        animatingTileRow === row &&
+                        animatingTileCol === col
+                    }
+                  ])}
+                  key={col}
+                  onClick={() => onClickTile(row, col)}
+                  style={
+                    tile !== 0
+                      ? {
+                          backgroundImage: `url("${backgroundImage}")`,
+                          backgroundSize: `${backgroundSize}%`,
+                          backgroundPosition: `${backgroundPositionX}% ${backgroundPositionY}%`
+                        }
+                      : undefined
+                  }>
+                  {tile !== 0 && <div className={styles.number}>{tile}</div>}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div className={styles.controls}>
+        <button
+          className={styles.control}
+          onClick={onClickShuffle}
+          type="button">
+          Shuffle
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,10 @@
 @import 'constants.scss';
 
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
 .row {
   display: flex;
 }
@@ -49,4 +54,14 @@
     transition: transform $transition;
     transform: translateX(100%);
   }
+}
+
+.controls {
+  margin-left: 40px;
+}
+
+.control {
+  width: 150px;
+  height: 150px;
+  font-size: 32px;
 }
