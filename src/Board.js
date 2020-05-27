@@ -2,42 +2,7 @@ import cn from 'classnames';
 import React from 'react';
 import styles from './Board.module.scss';
 import backgroundImage from './images/bg.jpg';
-
-function swapTiles(board, row1, col1, row2, col2) {
-  const temp = board[row1][col1];
-  board[row1][col1] = board[row2][col2];
-  board[row2][col2] = temp;
-}
-
-function shuffleBoard(board) {
-  const dimension = board.length;
-  // Fisher-Yates shuffle, adapted for a 2-d array
-  for (let i = dimension * dimension - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    const iRow = Math.floor(i / dimension);
-    const iCol = i % dimension;
-    const jRow = Math.floor(j / dimension);
-    const jCol = j % dimension;
-    swapTiles(board, iRow, iCol, jRow, jCol);
-  }
-  return board;
-}
-
-function generateSolved(dimension) {
-  let board = new Array(dimension);
-  for (let row = 0; row < dimension; row++) {
-    board[row] = new Array(dimension);
-    for (let col = 0; col < dimension; col++) {
-      board[row][col] = row * dimension + col + 1;
-    }
-  }
-  board[dimension - 1][dimension - 1] = 0;
-  return board;
-}
-
-function generateRandom(dimension) {
-  return shuffleBoard(generateSolved(dimension));
-}
+import { swapTiles, generateSolved, generateRandom } from './BoardUtil';
 
 const ANIMATION_MS = 500;
 const AUDIO_DELAY_MS = 300;
