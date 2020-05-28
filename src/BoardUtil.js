@@ -1,3 +1,5 @@
+import TinyQueue from 'tinyqueue';
+
 export function swapTiles(board, row1, col1, row2, col2) {
   const temp = board[row1][col1];
   board[row1][col1] = board[row2][col2];
@@ -81,24 +83,32 @@ export function neighbors(board, blankRow, blankCol) {
   let neighbors = [];
 
   if (blankRow > 0) {
-    neighbors.push(
-      createNeighbor(board, blankRow, blankCol, blankRow - 1, blankCol)
-    );
+    neighbors.push({
+      board: createNeighbor(board, blankRow, blankCol, blankRow - 1, blankCol),
+      blankRow: blankRow - 1,
+      blankCol
+    });
   }
   if (blankCol > 0) {
-    neighbors.push(
-      createNeighbor(board, blankRow, blankCol, blankRow, blankCol - 1)
-    );
+    neighbors.push({
+      board: createNeighbor(board, blankRow, blankCol, blankRow, blankCol - 1),
+      blankRow,
+      blankCol: blankCol - 1
+    });
   }
   if (blankRow < board.length - 1) {
-    neighbors.push(
-      createNeighbor(board, blankRow, blankCol, blankRow + 1, blankCol)
-    );
+    neighbors.push({
+      board: createNeighbor(board, blankRow, blankCol, blankRow + 1, blankCol),
+      blankRow: blankRow + 1,
+      blankCol
+    });
   }
   if (blankCol < board.length - 1) {
-    neighbors.push(
-      createNeighbor(board, blankRow, blankCol, blankRow, blankCol + 1)
-    );
+    neighbors.push({
+      board: createNeighbor(board, blankRow, blankCol, blankRow, blankCol + 1),
+      blankRow,
+      blankCol: blankCol + 1
+    });
   }
 
   return neighbors;
@@ -106,4 +116,65 @@ export function neighbors(board, blankRow, blankCol) {
 
 export function generateRandom(dimension) {
   return shuffleBoard(generateSolved(dimension));
+}
+
+function compare(n1, n2) {
+  return n1.manhattan + n1.steps - (n2.manhattan + n2.steps);
+}
+
+export function solve(board, blankRow, blankCol) {
+  const initial = {
+    board,
+    blankRow,
+    blankCol,
+    manhattan: manhattan(board),
+    steps: 0,
+    previous: null
+  };
+  const queue = new TinyQueue([initial], compare);
+  let searchNode = initial;
+
+  while (!isGoal(searchNode.board)) {
+    searchNode = queue.pop();
+    const neighborList = neighbors(
+      searchNode.board,
+      searchNode.blankRow,
+      searchNode.blankCol
+    );
+    for (let i = 0; i < neighborList.length; i++) {
+      const nextNeighbor = neighborList[i];
+
+      // Optimization: Don't go back to the previous board, that's silly
+      if (
+        searchNode.previous !== null &&
+        deepEqual(nextNeighbor.board, searchNode.previous.board)
+      ) {
+        continue;
+      }
+
+      queue.push({
+        board: nextNeighbor.board,
+        manhattan: manhattan(nextNeighbor.board),
+        steps: searchNode.steps + 1,
+        previous: searchNode,
+        blankRow: nextNeighbor.blankRow,
+        blankCol: nextNeighbor.blankCol
+      });
+    }
+  }
+
+  // Retrace steps
+  const solution = [];
+  while (searchNode !== null) {
+    solution.push({
+      board: searchNode.board,
+      blankRow: searchNode.blankRow,
+      blankCol: searchNode.blankCol
+    });
+    searchNode = searchNode.previous;
+  }
+
+  solution.reverse();
+  solution.shift(); // Remove initial board
+  return solution;
 }

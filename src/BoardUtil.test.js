@@ -3,7 +3,8 @@ import {
   generateSolved,
   isGoal,
   manhattan,
-  neighbors
+  neighbors,
+  solve
 } from './BoardUtil';
 
 test('deepEqual', () => {
@@ -110,7 +111,7 @@ test('neighbors - center case', () => {
     ],
     1,
     1
-  );
+  ).map(n => n.board);
 
   expect(neighborList.length).toBe(4);
   expect(neighborList).toContainEqual([
@@ -144,7 +145,7 @@ test('neighbors - edge case', () => {
     ],
     2,
     1
-  );
+  ).map(n => n.board);
 
   expect(neighborList.length).toBe(3);
   expect(neighborList).toContainEqual([
@@ -173,7 +174,7 @@ test('neighbors - corner case', () => {
     ],
     2,
     2
-  );
+  ).map(n => n.board);
 
   expect(neighborList.length).toBe(2);
   expect(neighborList).toContainEqual([
@@ -187,3 +188,48 @@ test('neighbors - corner case', () => {
     [7, 0, 8]
   ]);
 });
+
+test('solve - already solved', () => {
+  expect(
+    solve(
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 0]
+      ],
+      2,
+      2
+    ).length
+  ).toBe(0);
+});
+
+test('solve - one move', () => {
+  expect(
+    solve(
+      [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 0, 8]
+      ],
+      2,
+      1
+    ).length
+  ).toBe(1);
+});
+
+test('solve - multiple moves', () => {
+  const solution = solve(
+    [
+      [0, 1, 3],
+      [4, 2, 5],
+      [7, 8, 6]
+    ],
+    0,
+    0
+  );
+  expect(solution.length).toBe(4);
+
+  expect(solution[solution.length - 1].board).toEqual(generateSolved(3));
+});
+
+test('solve - unsolvable', () => {});
