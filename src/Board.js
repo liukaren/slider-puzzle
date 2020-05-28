@@ -2,19 +2,28 @@ import cn from 'classnames';
 import React from 'react';
 import styles from './Board.module.scss';
 import backgroundImage from './images/bg.jpg';
-import { swapTiles, generateSolved, generateRandom } from './BoardUtil';
+import { swapTiles, generateSolved, generateRandom, solve } from './BoardUtil';
 
 const ANIMATION_MS = 500;
 const AUDIO_DELAY_MS = 300;
 
 export default function Board({ dimension }) {
-  let [board, setBoard] = React.useState(generateSolved(dimension));
-  let [blankRow, setBlankRow] = React.useState(dimension - 1);
-  let [blankCol, setBlankCol] = React.useState(dimension - 1);
+  let [board, setBoard] = React.useState({
+    tiles: generateSolved(dimension),
+    blankRow: dimension - 1,
+    blankCol: dimension - 1
+  });
 
-  let [animation, setAnimation] = React.useState(null);
-  let [animatingTileRow, setAnimatingTileRow] = React.useState(null);
-  let [animatingTileCol, setAnimatingTileCol] = React.useState(null);
+  let [animation, setAnimation] = React.useState({
+    animation: null,
+    row: null,
+    col: null
+  });
+
+  // Ensure animation callbacks always read latest state
+  // https://reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function
+  const boardRef = React.useRef(board);
+  boardRef.current = board;
 
   const sound = React.useMemo(() => {
     return document.getElementById('sound-tile');
@@ -23,9 +32,7 @@ export default function Board({ dimension }) {
   const moveTile = React.useCallback(
     (row, col, animation) => {
       // Play animation
-      setAnimatingTileRow(row);
-      setAnimatingTileCol(col);
-      setAnimation(animation);
+      setAnimation({ animation, row, col });
 
       // Play sound (after small delay)
       setTimeout(() => {
@@ -33,60 +40,86 @@ export default function Board({ dimension }) {
         sound.play();
       }, AUDIO_DELAY_MS);
 
-      setTimeout(() => {
-        // Stop animation
-        setAnimatingTileRow(null);
-        setAnimatingTileCol(null);
-        setAnimation(null);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          // Stop animation
+          setAnimation({ animation: null, row: null, col: null });
 
-        // Update state
-        swapTiles(board, row, col, blankRow, blankCol);
-        setBoard(board); // TODO: does this trigger a re-render?
-        setBlankRow(row);
-        setBlankCol(col);
-      }, ANIMATION_MS);
+          // Update state
+          swapTiles(
+            boardRef.current.tiles,
+            row,
+            col,
+            boardRef.current.blankRow,
+            boardRef.current.blankCol
+          );
+          setBoard({
+            tiles: boardRef.current.tiles,
+            blankRow: row,
+            blankCol: col
+          });
+
+          resolve();
+        }, ANIMATION_MS);
+      });
     },
-    [board, blankRow, blankCol, sound]
+    [boardRef, sound]
   );
 
   const onClickTile = React.useCallback(
     (row, col) => {
-      if (animation) return; // Ignore clicks during animation
+      if (animation.animation) return Promise.resolve(); // Ignore clicks during animation
 
+      const { blankRow, blankCol } = boardRef.current;
       if (row - 1 === blankRow && col === blankCol) {
-        moveTile(row, col, styles.slideUp);
+        return moveTile(row, col, styles.slideUp);
       } else if (row + 1 === blankRow && col === blankCol) {
-        moveTile(row, col, styles.slideDown);
+        return moveTile(row, col, styles.slideDown);
       } else if (row === blankRow && col - 1 === blankCol) {
-        moveTile(row, col, styles.slideLeft);
+        return moveTile(row, col, styles.slideLeft);
       } else if (row === blankRow && col + 1 === blankCol) {
-        moveTile(row, col, styles.slideRight);
+        return moveTile(row, col, styles.slideRight);
       }
+
       // Not adjacent to blank space, do nothing
+      return Promise.resolve();
     },
-    [moveTile, animation, blankCol, blankRow]
+    [moveTile, animation, boardRef]
   );
 
   const onClickShuffle = React.useCallback(() => {
     const randomBoard = generateRandom(dimension);
-    setBoard(randomBoard);
     for (let row = 0; row < dimension; row++) {
       for (let col = 0; col < dimension; col++) {
         if (randomBoard[row][col] === 0) {
-          setBlankRow(row);
-          setBlankCol(col);
+          setBoard({
+            tiles: randomBoard,
+            blankRow: row,
+            blankCol: col
+          });
           return;
         }
       }
     }
   }, [dimension]);
 
+  const onClickSolve = React.useCallback(() => {
+    const solution = solve(board.tiles, board.blankRow, board.blankCol);
+
+    // Chain all steps of the solution into serial promises
+    solution.reduce(
+      (promise, nextStep) =>
+        promise.then(() => onClickTile(nextStep.blankRow, nextStep.blankCol)),
+      Promise.resolve()
+    );
+  }, [onClickTile, board]);
+
   const backgroundSize = 100 * dimension;
 
   return (
     <div className={styles.wrapper}>
       <div>
-        {board.map((rowValues, row) => (
+        {board.tiles.map((rowValues, row) => (
           <div className={styles.row} key={row}>
             {rowValues.map((tile, col) => {
               // Where this tile would be if it were in the winning position
@@ -103,10 +136,8 @@ export default function Board({ dimension }) {
                     styles.tile,
                     {
                       [styles.nonEmpty]: tile !== 0,
-                      [animation]:
-                        animation &&
-                        animatingTileRow === row &&
-                        animatingTileCol === col
+                      [animation.animation]:
+                        animation.row === row && animation.col === col
                     }
                   ])}
                   key={col}
@@ -133,6 +164,9 @@ export default function Board({ dimension }) {
           onClick={onClickShuffle}
           type="button">
           Shuffle
+        </button>
+        <button className={styles.control} onClick={onClickSolve} type="button">
+          Solve
         </button>
       </div>
     </div>
