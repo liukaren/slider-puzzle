@@ -2,7 +2,13 @@ import cn from 'classnames';
 import React from 'react';
 import styles from './Board.module.scss';
 import backgroundImage from './images/bg.jpg';
-import { swapTiles, generateSolved, generateRandom, solve } from './BoardUtil';
+import {
+  swapTiles,
+  generateSolved,
+  generateRandom,
+  getGoalPosition,
+  solve
+} from './BoardUtil';
 
 const ANIMATION_MS = 500;
 const AUDIO_DELAY_MS = 300;
@@ -122,13 +128,11 @@ export default function Board({ dimension }) {
         {board.tiles.map((rowValues, row) => (
           <div className={styles.row} key={row}>
             {rowValues.map((tile, col) => {
-              // Where this tile would be if it were in the winning position
-              const targetRow = Math.floor((tile - 1) / dimension);
-              const targetCol = (tile - 1) % dimension;
+              const goal = getGoalPosition(tile, dimension);
 
-              // Use winning position to calculate background
-              const backgroundPositionX = Math.ceil(-100 * targetCol);
-              const backgroundPositionY = Math.ceil(-100 * targetRow);
+              // Use goal position to calculate background
+              const backgroundPositionX = Math.ceil(-100 * goal.col);
+              const backgroundPositionY = Math.ceil(-100 * goal.row);
 
               return (
                 <div

@@ -45,17 +45,23 @@ export function isGoal(board) {
   return true;
 }
 
+export function getGoalPosition(tile, dimension) {
+  return {
+    row: Math.floor((tile - 1) / dimension),
+    col: (tile - 1) % dimension
+  };
+}
+
 // Returns the "manhattan" or "taxicab" distance of this board from the goal board
 export function manhattan(board) {
-  let dim = board.length;
+  const dim = board.length;
   let distance = 0;
   for (let row = 0; row < dim; row++) {
     for (let col = 0; col < dim; col++) {
-      let tile = board[row][col];
+      const tile = board[row][col];
       if (tile === 0) continue;
-      let goalRow = Math.floor((tile - 1) / dim);
-      let goalCol = (tile - 1) % dim;
-      distance += Math.abs(goalRow - row) + Math.abs(goalCol - col);
+      const goal = getGoalPosition(tile, dim);
+      distance += Math.abs(goal.row - row) + Math.abs(goal.col - col);
     }
   }
   return distance;

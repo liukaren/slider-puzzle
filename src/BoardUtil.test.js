@@ -1,6 +1,7 @@
 import {
   deepEqual,
   generateSolved,
+  getGoalPosition,
   isGoal,
   manhattan,
   neighbors,
@@ -52,6 +53,16 @@ test('generateSolved', () => {
     [9, 10, 11, 12],
     [13, 14, 15, 0]
   ]);
+});
+
+test('getGoalPosition', () => {
+  expect(getGoalPosition(1, 3)).toEqual({ row: 0, col: 0 });
+  expect(getGoalPosition(1, 4)).toEqual({ row: 0, col: 0 });
+  expect(getGoalPosition(4, 3)).toEqual({ row: 1, col: 0 });
+  expect(getGoalPosition(4, 4)).toEqual({ row: 0, col: 3 });
+  expect(getGoalPosition(5, 3)).toEqual({ row: 1, col: 1 });
+  expect(getGoalPosition(5, 4)).toEqual({ row: 1, col: 0 });
+  // NOTE: getGoalPosition(0, x) is not expected to be called
 });
 
 test('isGoal', () => {
