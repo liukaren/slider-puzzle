@@ -1,0 +1,12 @@
+@import 'constants.scss';
+
+.controls {
+  margin-bottom: $gutterMd;
+  text-align: right;
+
+  & > .control {
+    font-size: 28px;
+    width: 60px;
+    height: 60px;
+  }
+}

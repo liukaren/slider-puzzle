@@ -1,6 +1,7 @@
 $tileSize: 100px;
 $numberSize: 50px;
 $transition: 250ms;
+$gutterMd: 20px;
 
 @mixin centerChildren() {
   display: flex;

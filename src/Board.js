@@ -31,6 +31,16 @@ export default function Board({ dimension }) {
   const boardRef = React.useRef(board);
   boardRef.current = board;
 
+  // Re-generate board when dimension changes
+  React.useEffect(() => {
+    // TODO: Ask to confirm if modifying from non-goal board
+    setBoard({
+      tiles: generateSolved(dimension),
+      blankRow: dimension - 1,
+      blankCol: dimension - 1
+    });
+  }, [dimension]);
+
   const sound = React.useMemo(() => {
     return document.getElementById('sound-tile');
   }, []);
