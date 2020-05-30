@@ -1,8 +1,10 @@
 import {
   deepEqual,
+  countInversions,
   generateSolved,
   getGoalPosition,
   isGoal,
+  isSolvable,
   manhattan,
   neighbors,
   solve
@@ -38,6 +40,19 @@ test('deepEqual', () => {
       ]
     )
   ).toBe(false);
+});
+
+test('countInversions', () => {
+  expect(countInversions([1, 2, 3])).toBe(0);
+  expect(countInversions([3, 2, 1])).toBe(3);
+  expect(countInversions([9, 4, 6, 5, 2, 8])).toBe(9);
+});
+
+test('countInversions - ignores zero (blank space)', () => {
+  expect(countInversions([1, 2, 3, 4, 0])).toBe(0);
+  expect(countInversions([1, 2, 0, 3, 4])).toBe(0);
+  expect(countInversions([1, 4, 3, 2, 0])).toBe(3);
+  expect(countInversions([1, 4, 0, 3, 2])).toBe(3);
 });
 
 test('generateSolved', () => {
@@ -83,6 +98,55 @@ test('isGoal', () => {
       [9, 10, 7, 12],
       [13, 14, 15, 0]
     ])
+  ).toBe(false);
+});
+
+test('isSolvable', () => {
+  expect(
+    isSolvable(
+      [
+        [1, 8, 2],
+        [0, 4, 3],
+        [7, 6, 5]
+      ],
+      1
+    )
+  ).toBe(true);
+
+  expect(
+    isSolvable(
+      [
+        [8, 1, 2], // Same as above, but swap two tiles here
+        [0, 4, 3],
+        [7, 6, 5]
+      ],
+      1
+    )
+  ).toBe(false);
+
+  expect(
+    isSolvable(
+      [
+        [13, 2, 10, 3],
+        [1, 12, 8, 4],
+        [5, 0, 9, 6],
+        [15, 14, 11, 7]
+      ],
+      2
+    )
+  ).toBe(true);
+
+  expect(
+    isSolvable(
+      [
+        [13, 2, 10, 3],
+        [1, 12, 4, 8], // Same as above, but swap two tiles here
+        [5, 0, 9, 6],
+        [15, 14, 11, 7]
+      ],
+      2,
+      1
+    )
   ).toBe(false);
 });
 

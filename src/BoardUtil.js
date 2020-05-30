@@ -6,6 +6,15 @@ export function swapTiles(board, row1, col1, row2, col2) {
   board[row2][col2] = temp;
 }
 
+function findBlank(board) {
+  const dimension = board.length;
+  for (let row = 0; row < dimension; row++) {
+    for (let col = 0; col < dimension; col++) {
+      if (board[row][col] === 0) return { row, col };
+    }
+  }
+}
+
 export function shuffleBoard(board) {
   const dimension = board.length;
   // Fisher-Yates shuffle, adapted for a 2-d array
@@ -17,7 +26,43 @@ export function shuffleBoard(board) {
     const jCol = j % dimension;
     swapTiles(board, iRow, iCol, jRow, jCol);
   }
+
+  const blankPos = findBlank(board);
+  if (!isSolvable(board, blankPos.row)) {
+    // Create one more inversion (avoid the blank tile) to make the board solvable.
+    // Probably makes the board randomness less evenly distributed, but meh.
+    if (blankPos.row === 0) swapTiles(board, 1, 0, 1, 1);
+    else swapTiles(board, 0, 0, 0, 1);
+  }
+
   return board;
+}
+
+export function countInversions(array) {
+  let inversions = 0;
+  // TODO: Replace naive count inversions
+  for (let i = 0; i < array.length; i++) {
+    for (let j = i + 1; j < array.length; j++) {
+      // Ignore the blank/0 tile
+      if (array[i] !== 0 && array[j] !== 0 && array[i] > array[j]) inversions++;
+    }
+  }
+  return inversions;
+}
+
+// https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+export function isSolvable(board, blankRow) {
+  const dimension = board.length;
+  const flattenedBoard = [].concat(...board);
+  const inversions = countInversions(flattenedBoard);
+  if (dimension % 2 === 1) {
+    return inversions % 2 === 0;
+  } else {
+    if (blankRow % 2 === 0) {
+      return inversions % 2 === 1;
+    }
+    return inversions % 2 === 0;
+  }
 }
 
 export function generateSolved(dimension) {
