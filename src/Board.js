@@ -10,8 +10,8 @@ import {
   solve
 } from './BoardUtil';
 
-const ANIMATION_MS = 500;
-const AUDIO_DELAY_MS = 300;
+const ANIMATION_MS = 250;
+const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 
 export default function Board({ dimension }) {
   let [board, setBoard] = React.useState({
