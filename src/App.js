@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [dimension, setDimension] = React.useState(3);
+  const [showNumbers, setShowNumbers] = React.useState(true);
 
   return (
     <div className="App">
@@ -28,8 +29,14 @@ function App() {
             disabled={dimension === 5}>
             24
           </button>
+
+          <button
+            className={styles.numbersControl}
+            onClick={() => setShowNumbers(!showNumbers)}>
+            123
+          </button>
         </div>
-        <Board dimension={dimension} />
+        <Board dimension={dimension} showNumbers={showNumbers} />
       </header>
     </div>
   );

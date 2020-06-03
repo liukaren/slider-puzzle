@@ -1,6 +1,9 @@
 @import 'constants.scss';
 
 .controls {
+  display: flex;
+  align-items: center;
+
   margin-bottom: $gutterMd;
   text-align: right;
 
@@ -9,4 +12,8 @@
     width: 60px;
     height: 60px;
   }
+}
+
+.numbersControl {
+  margin-left: $gutterMd;
 }

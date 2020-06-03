@@ -13,7 +13,7 @@ import {
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 
-export default function Board({ dimension }) {
+export default function Board({ dimension, showNumbers }) {
   let [board, setBoard] = React.useState({
     tiles: generateSolved(dimension),
     blankRow: dimension - 1,
@@ -165,7 +165,9 @@ export default function Board({ dimension }) {
                         }
                       : undefined
                   }>
-                  {tile !== 0 && <div className={styles.number}>{tile}</div>}
+                  {tile !== 0 && showNumbers && (
+                    <div className={styles.number}>{tile}</div>
+                  )}
                 </div>
               );
             })}
