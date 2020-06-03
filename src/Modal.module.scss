@@ -1,0 +1,40 @@
+@import 'constants.scss';
+
+.modal {
+  animation: fadeIn ease-in $transition both;
+  z-index: $zIndexModal;
+
+  // Covers the screen
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  // Centers contents
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Background overlay
+.modalBackground {
+  z-index: 1;
+
+  // Covers the screen
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  opacity: 0.5;
+  background-color: white;
+}
+
+.modalContent {
+  z-index: 2; // Show over the background overlay
+
+  animation: scaleIn ease-in $transition both;
+  background-color: white;
+}

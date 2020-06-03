@@ -3,6 +3,8 @@ $numberSize: 50px;
 $transition: 250ms;
 $gutterMd: 20px;
 
+$zIndexModal: 10;
+
 @mixin centerChildren() {
   display: flex;
   align-items: center;

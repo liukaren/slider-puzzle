@@ -1,11 +1,16 @@
 import React from 'react';
+import BackgroundPicker from './BackgroundPicker.js';
 import Board from './Board.js';
 import styles from './App.module.scss';
 import './App.css';
+import DefaultBackground from './images/bg.jpg'; // TODO: Remove
 
 function App() {
   const [dimension, setDimension] = React.useState(3);
   const [showNumbers, setShowNumbers] = React.useState(true);
+  const [background, setBackground] = React.useState({
+    url: DefaultBackground
+  });
 
   return (
     <div className="App">
@@ -36,7 +41,12 @@ function App() {
             123
           </button>
         </div>
-        <Board dimension={dimension} showNumbers={showNumbers} />
+        <Board
+          background={background}
+          dimension={dimension}
+          showNumbers={showNumbers}
+        />
+        <BackgroundPicker setBackground={setBackground} />
       </header>
     </div>
   );

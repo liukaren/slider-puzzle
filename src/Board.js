@@ -1,7 +1,6 @@
 import cn from 'classnames';
 import React from 'react';
 import styles from './Board.module.scss';
-import backgroundImage from './images/bg.jpg';
 import {
   swapTiles,
   generateSolved,
@@ -13,7 +12,7 @@ import {
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 
-export default function Board({ dimension, showNumbers }) {
+export default function Board({ dimension, showNumbers, background }) {
   let [board, setBoard] = React.useState({
     tiles: generateSolved(dimension),
     blankRow: dimension - 1,
@@ -130,7 +129,30 @@ export default function Board({ dimension, showNumbers }) {
     );
   }, [onClickTile, board]);
 
-  const backgroundSize = 100 * dimension;
+  // Fit to smaller dimension ("cover" background style)
+  // (If we don't know dimensions, stretch in both dimensions)
+  const backgroundWidth = React.useMemo(() => {
+    if (
+      !background.width ||
+      !background.height ||
+      background.width < background.height
+    ) {
+      return 100 * dimension;
+    } else {
+      return 100 * (background.width / background.height) * dimension;
+    }
+  }, [background, dimension]);
+  const backgroundHeight = React.useMemo(() => {
+    if (
+      !background.width ||
+      !background.height ||
+      background.height < background.width
+    ) {
+      return 100 * dimension;
+    } else {
+      return 100 * (background.height / background.width) * dimension;
+    }
+  }, [background, dimension]);
 
   return (
     <div className={styles.wrapper}>
@@ -141,6 +163,7 @@ export default function Board({ dimension, showNumbers }) {
               const goal = getGoalPosition(tile, dimension);
 
               // Use goal position to calculate background
+              // TODO: offset to center non-square backgrounds
               const backgroundPositionX = Math.ceil(-100 * goal.col);
               const backgroundPositionY = Math.ceil(-100 * goal.row);
 
@@ -159,8 +182,8 @@ export default function Board({ dimension, showNumbers }) {
                   style={
                     tile !== 0
                       ? {
-                          backgroundImage: `url("${backgroundImage}")`,
-                          backgroundSize: `${backgroundSize}%`,
+                          backgroundImage: `url("${background.url}")`,
+                          backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
                           backgroundPosition: `${backgroundPositionX}% ${backgroundPositionY}%`
                         }
                       : undefined

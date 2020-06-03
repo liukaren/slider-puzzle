@@ -1,0 +1,7 @@
+@import 'constants.scss';
+
+.giphy {
+  padding: $gutterMd;
+  max-height: 60vh;
+  overflow: auto;
+}
