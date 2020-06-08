@@ -36,6 +36,30 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
 
 export default function ({ setBackground }) {
   const [showGiphy, setShowGiphy] = React.useState(false);
+  const imageUpload = React.useRef();
+
+  const onUpload = React.useCallback(
+    e => {
+      e.preventDefault();
+      const files = imageUpload.current.files;
+      if (FileReader && files && files.length) {
+        const fr = new FileReader();
+        fr.onload = function () {
+          const img = new Image();
+          img.src = fr.result;
+          img.onload = function () {
+            setBackground({
+              url: fr.result,
+              width: this.width,
+              height: this.height
+            });
+          };
+        };
+        fr.readAsDataURL(files[0]);
+      }
+    },
+    [setBackground]
+  );
 
   return (
     <div>
@@ -46,6 +70,14 @@ export default function ({ setBackground }) {
           setBackground={setBackground}
         />
       )}
+      <label htmlFor="image-bg">Select a file:</label>
+      <input
+        type="file"
+        id="image-bg"
+        name="image-bg"
+        ref={imageUpload}
+        onChange={onUpload}
+      />
     </div>
   );
 }
