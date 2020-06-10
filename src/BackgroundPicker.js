@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
+import Button from './Button';
 import Modal from './Modal';
 import styles from './BackgroundPicker.module.scss';
 
@@ -62,22 +63,32 @@ export default function ({ setBackground }) {
   );
 
   return (
-    <div>
-      <button onClick={() => setShowGiphy(!showGiphy)}>Giphy</button>
+    <div className={styles.backgroundPicker}>
+      <Button
+        className={styles.giphyButton}
+        onClick={() => setShowGiphy(!showGiphy)}>
+        Giphy
+      </Button>
       {showGiphy && (
         <GiphyBackgroundPicker
           onClose={() => setShowGiphy(false)}
           setBackground={setBackground}
         />
       )}
-      <label htmlFor="image-bg">Select a file:</label>
       <input
         type="file"
         id="image-bg"
         name="image-bg"
+        className={styles.uploadInput}
         ref={imageUpload}
         onChange={onUpload}
       />
+      <label className={styles.uploadLabel} htmlFor="image-bg">
+        Upload
+        {/* {imageUpload.current?.files?.length > 0
+            ? imageUpload.current.files[0].name
+            : 'Upload an image'} */}
+      </label>
     </div>
   );
 }

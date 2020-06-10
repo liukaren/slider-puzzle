@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import React from 'react';
+import Button from './Button';
 import styles from './Board.module.scss';
 import {
   swapTiles,
@@ -198,15 +199,15 @@ export default function Board({ dimension, showNumbers, background }) {
         ))}
       </div>
       <div className={styles.controls}>
-        <button
+        <Button
           className={styles.control}
           onClick={onClickShuffle}
           type="button">
           Shuffle
-        </button>
-        <button className={styles.control} onClick={onClickSolve} type="button">
+        </Button>
+        <Button className={styles.control} onClick={onClickSolve} type="button">
           Solve
-        </button>
+        </Button>
       </div>
     </div>
   );

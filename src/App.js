@@ -1,6 +1,7 @@
 import React from 'react';
-import BackgroundPicker from './BackgroundPicker.js';
-import Board from './Board.js';
+import BackgroundPicker from './BackgroundPicker';
+import Board from './Board';
+import Button from './Button';
 import styles from './App.module.scss';
 import './App.css';
 import DefaultBackground from './images/bg.jpg'; // TODO: Remove
@@ -16,30 +17,30 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className={styles.controls}>
-          <button
+          <Button
             className={styles.control}
             onClick={() => setDimension(3)}
             disabled={dimension === 3}>
             8
-          </button>
-          <button
+          </Button>
+          <Button
             className={styles.control}
             onClick={() => setDimension(4)}
             disabled={dimension === 4}>
             15
-          </button>
-          <button
+          </Button>
+          <Button
             className={styles.control}
             onClick={() => setDimension(5)}
             disabled={dimension === 5}>
             24
-          </button>
+          </Button>
 
-          <button
+          <Button
             className={styles.numbersControl}
             onClick={() => setShowNumbers(!showNumbers)}>
             123
-          </button>
+          </Button>
         </div>
         <Board
           background={background}

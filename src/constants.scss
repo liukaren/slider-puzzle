@@ -5,6 +5,12 @@ $gutterMd: 20px;
 
 $zIndexModal: 10;
 
+@mixin marginBottomUnlessLast($margin) {
+  &:not(:last-child) {
+    margin-bottom: $margin;
+  }
+}
+
 @mixin centerChildren() {
   display: flex;
   align-items: center;

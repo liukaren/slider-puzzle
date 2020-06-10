@@ -1,0 +1,23 @@
+@import 'constants.scss';
+
+// https://tympanus.net/codrops/2013/06/13/creative-button-styles/
+.button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 25px 80px;
+  text-transform: uppercase;
+  transition: color $transition, background $transition;
+
+  border: 3px solid #fff;
+  color: #fff;
+  &:hover,
+  &:active {
+    color: #0e83cd;
+    background: #fff;
+  }
+}
