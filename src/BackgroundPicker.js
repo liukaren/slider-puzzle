@@ -1,35 +1,73 @@
-import React from 'react';
-import { Grid } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
+import { Grid } from '@giphy/react-components';
+import React from 'react';
 import Button from './Button';
 import Modal from './Modal';
+import SearchInput from './SearchInput';
 import styles from './BackgroundPicker.module.scss';
 
-const gf = new GiphyFetch('wEjpTQrDHjj0hPtF6NUQFB26bcrn0byC');
-
-// configure your fetch: fetch 10 gifs at a time as the user scrolls (offset is handled by the grid)
-const fetchGifs = offset => gf.trending({ offset, limit: 10 });
+const GF = new GiphyFetch('wEjpTQrDHjj0hPtF6NUQFB26bcrn0byC');
+const FETCH_LIMIT = 10;
+const GIPHY_DEBOUNCE_MS = 500;
 
 function GiphyBackgroundPicker({ setBackground, onClose }) {
+  const [search, setSearch] = React.useState(null);
+  const [showResults, setShowResults] = React.useState(true);
+  const [debounceTimer, setDebounceTimeout] = React.useState(null);
+
+  const fetchGifs = React.useCallback(
+    offset => {
+      if (!search) return GF.trending({ offset, limit: FETCH_LIMIT });
+      return GF.search(search, { sort: 'relevant', limit: FETCH_LIMIT });
+    },
+    [search]
+  );
+
   const selectGif = React.useCallback(
     (gif, e) => {
       e.preventDefault();
       setBackground(gif.images.downsized);
       onClose();
-      console.log('clicked', gif);
     },
     [setBackground, onClose]
   );
+
+  const searchRequest = React.useCallback(searchTerm => {
+    setSearch(searchTerm);
+
+    // NOTE: This is a hack to force giphy Grid to discard cache and re-render
+    setShowResults(false);
+    setTimeout(() => setShowResults(true), 1);
+  }, []);
+
+  const onInputChange = React.useCallback(
+    e => {
+      const searchTerm = e.target.value;
+      clearTimeout(debounceTimer);
+      const timer = setTimeout(
+        () => searchRequest(searchTerm),
+        GIPHY_DEBOUNCE_MS
+      );
+      setDebounceTimeout(timer);
+    },
+    [debounceTimer, searchRequest]
+  );
+
   return (
     <Modal onClose={onClose}>
       <div className={styles.giphy}>
-        <Grid
-          width={400}
-          columns={3}
-          hideAttribution
-          fetchGifs={fetchGifs}
-          onGifClick={selectGif}
-        />
+        <SearchInput onChange={onInputChange} />
+        <div className={styles.giphyResults}>
+          {showResults && (
+            <Grid
+              width={400}
+              columns={3}
+              hideAttribution
+              fetchGifs={fetchGifs}
+              onGifClick={selectGif}
+            />
+          )}
+        </div>
       </div>
     </Modal>
   );

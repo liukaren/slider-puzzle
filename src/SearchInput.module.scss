@@ -1,0 +1,28 @@
+@import 'constants.scss';
+
+.input {
+  border: 0;
+  color: $color1;
+  font-size: $fontSizeLg;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: color $transition, background $transition;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.icon {
+  width: $fontSizeLg;
+  height: $fontSizeLg;
+  margin-left: $gutterMd;
+  fill: $color1;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  border: 3px solid $color1;
+  padding: $gutterMd;
+}

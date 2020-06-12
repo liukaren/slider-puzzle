@@ -6,7 +6,11 @@
 
 .giphy {
   padding: $gutterMd;
-  max-height: 60vh;
+}
+
+.giphyResults {
+  margin-top: $gutterMd;
+  height: 60vh;
   overflow: auto;
 }
 
