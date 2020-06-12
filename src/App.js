@@ -3,7 +3,6 @@ import BackgroundPicker from './BackgroundPicker';
 import Board from './Board';
 import Button from './Button';
 import styles from './App.module.scss';
-import './App.css';
 import DefaultBackground from './images/bg.jpg'; // TODO: Remove
 
 function App() {
@@ -14,41 +13,39 @@ function App() {
   });
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className={styles.controls}>
-          <Button
-            className={styles.control}
-            onClick={() => setDimension(3)}
-            disabled={dimension === 3}>
-            8
-          </Button>
-          <Button
-            className={styles.control}
-            onClick={() => setDimension(4)}
-            disabled={dimension === 4}>
-            15
-          </Button>
-          <Button
-            className={styles.control}
-            onClick={() => setDimension(5)}
-            disabled={dimension === 5}>
-            24
-          </Button>
+    <div className={styles.app}>
+      <div className={styles.controls}>
+        <Button
+          className={styles.control}
+          onClick={() => setDimension(3)}
+          disabled={dimension === 3}>
+          8
+        </Button>
+        <Button
+          className={styles.control}
+          onClick={() => setDimension(4)}
+          disabled={dimension === 4}>
+          15
+        </Button>
+        <Button
+          className={styles.control}
+          onClick={() => setDimension(5)}
+          disabled={dimension === 5}>
+          24
+        </Button>
 
-          <Button
-            className={styles.numbersControl}
-            onClick={() => setShowNumbers(!showNumbers)}>
-            123
-          </Button>
-        </div>
-        <Board
-          background={background}
-          dimension={dimension}
-          showNumbers={showNumbers}
-        />
-        <BackgroundPicker setBackground={setBackground} />
-      </header>
+        <Button
+          className={styles.numbersControl}
+          onClick={() => setShowNumbers(!showNumbers)}>
+          123
+        </Button>
+      </div>
+      <Board
+        background={background}
+        dimension={dimension}
+        showNumbers={showNumbers}
+      />
+      <BackgroundPicker setBackground={setBackground} />
     </div>
   );
 }

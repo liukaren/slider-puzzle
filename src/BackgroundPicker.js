@@ -122,10 +122,7 @@ export default function ({ setBackground }) {
         onChange={onUpload}
       />
       <label className={styles.uploadLabel} htmlFor="image-bg">
-        Upload
-        {/* {imageUpload.current?.files?.length > 0
-            ? imageUpload.current.files[0].name
-            : 'Upload an image'} */}
+        File
       </label>
     </div>
   );

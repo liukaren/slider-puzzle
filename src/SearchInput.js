@@ -5,9 +5,9 @@ import { ReactComponent as SearchIcon } from './images/search.svg';
 
 export default function ({ className, ...proxiedProps }) {
   return (
-    <div className={styles.wrapper}>
+    <label className={styles.wrapper}>
       <input className={cn(styles.input, className)} {...proxiedProps} />
       <SearchIcon className={styles.icon} />
-    </div>
+    </label>
   );
 }

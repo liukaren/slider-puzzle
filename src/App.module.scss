@@ -1,5 +1,16 @@
 @import 'constants.scss';
 
+.app {
+  text-align: center;
+  background-color: $color1;
+  min-height: calc(100vh - #{$gutterMd * 2});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $gutterMd;
+}
+
 .controls {
   display: flex;
   align-items: center;

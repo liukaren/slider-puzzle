@@ -28,7 +28,22 @@
   z-index: -1;
 
   & + label {
-    // display: inline-block;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: $fontSizeLg;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 25px 80px;
+    text-transform: uppercase;
+    transition: color $transition, background $transition;
+
+    border: 3px solid $color3;
+    color: $color3;
+    &:hover,
+    &:active {
+      color: $color2;
+      background: $color3;
+    }
   }
 
   &:focus + label {
