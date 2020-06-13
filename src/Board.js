@@ -12,6 +12,7 @@ import {
 
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
+const TILE_SIZE = 100; // Sync with constants.scss
 
 export default function Board({ dimension, showNumbers, background }) {
   let [board, setBoard] = React.useState({
@@ -155,6 +156,22 @@ export default function Board({ dimension, showNumbers, background }) {
     }
   }, [background, dimension]);
 
+  // Offsets to center non-square backgrounds
+  const horizontalOffset = React.useMemo(() => {
+    if (background.height > background.width) return 0;
+    const excessRatio = background.width / background.height - 1;
+    const excessRatioLeft = excessRatio / 2;
+    const excessPixelsLeft = excessRatioLeft * dimension * TILE_SIZE;
+    return excessPixelsLeft;
+  }, [background, dimension]);
+  const verticalOffset = React.useMemo(() => {
+    if (background.width > background.height) return 0;
+    const excessRatio = background.height / background.width - 1;
+    const excessRatioTop = excessRatio / 2;
+    const excessPixelsTop = excessRatioTop * dimension * TILE_SIZE;
+    return excessPixelsTop;
+  }, [background, dimension]);
+
   return (
     <div className={styles.wrapper}>
       <div>
@@ -164,9 +181,12 @@ export default function Board({ dimension, showNumbers, background }) {
               const goal = getGoalPosition(tile, dimension);
 
               // Use goal position to calculate background
-              // TODO: offset to center non-square backgrounds
-              const backgroundPositionX = Math.ceil(-100 * goal.col);
-              const backgroundPositionY = Math.ceil(-100 * goal.row);
+              const backgroundPositionX = Math.ceil(
+                goal.col * -TILE_SIZE - horizontalOffset
+              );
+              const backgroundPositionY = Math.ceil(
+                goal.row * -TILE_SIZE - verticalOffset
+              );
 
               return (
                 <div
@@ -185,7 +205,7 @@ export default function Board({ dimension, showNumbers, background }) {
                       ? {
                           backgroundImage: `url("${background.url}")`,
                           backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
-                          backgroundPosition: `${backgroundPositionX}% ${backgroundPositionY}%`
+                          backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`
                         }
                       : undefined
                   }>
