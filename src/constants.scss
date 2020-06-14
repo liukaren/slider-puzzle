@@ -4,18 +4,28 @@ $color3: #f7fff7;
 $color4: #ff6b6b;
 $color5: #ffe66d;
 
+$fontSizeSm: 18px;
+$fontSizeMd: 24px;
 $fontSizeLg: 28px;
 
 $tileSize: 100px; // Sync with constant in Board.js
 $numberSize: 50px;
 $transition: 250ms;
-$gutterMd: 20px;
+
+$gutterSm: 8px;
+$gutterMd: 16px;
 
 $zIndexModal: 10;
 
 @mixin marginBottomUnlessLast($margin) {
   &:not(:last-child) {
     margin-bottom: $margin;
+  }
+}
+
+@mixin marginRightUnlessLast($margin) {
+  &:not(:last-child) {
+    margin-right: $margin;
   }
 }
 

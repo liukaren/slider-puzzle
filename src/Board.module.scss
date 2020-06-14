@@ -63,10 +63,28 @@
   margin-left: $gutterMd;
 }
 
-.control {
-  display: block;
-  width: 150px;
-  height: 150px;
-  padding: 0;
+.controlHeader {
+  display: inline-block;
+  color: $color3;
+  border-top: 1px solid $color3;
+  border-bottom: 1px solid $color3;
+  font-size: $fontSizeSm;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: $gutterMd;
+  padding: $gutterSm;
+  text-transform: uppercase;
+}
+
+.controlGroup {
   @include marginBottomUnlessLast($gutterMd);
+}
+
+.control {
+  &.main {
+    width: 180px;
+    height: 100px;
+    font-size: $fontSizeLg;
+  }
+  @include marginRightUnlessLast($gutterMd);
 }

@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import React from 'react';
+import BackgroundPicker from './BackgroundPicker';
 import Button from './Button';
 import styles from './Board.module.scss';
 import {
@@ -9,12 +10,21 @@ import {
   getGoalPosition,
   solve
 } from './BoardUtil';
+import DefaultBackground from './images/bg.jpg'; // TODO: Remove
 
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 const TILE_SIZE = 100; // Sync with constants.scss
 
-export default function Board({ dimension, showNumbers, background }) {
+export default function Board() {
+  const [dimension, setDimension] = React.useState(3);
+  const [showNumbers, setShowNumbers] = React.useState(true);
+  const [background, setBackground] = React.useState({
+    url: DefaultBackground,
+    width: 800,
+    height: 588
+  });
+
   let [board, setBoard] = React.useState({
     tiles: generateSolved(dimension),
     blankRow: dimension - 1,
@@ -219,15 +229,45 @@ export default function Board({ dimension, showNumbers, background }) {
         ))}
       </div>
       <div className={styles.controls}>
-        <Button
-          className={styles.control}
-          onClick={onClickShuffle}
-          type="button">
-          Shuffle
-        </Button>
-        <Button className={styles.control} onClick={onClickSolve} type="button">
-          Solve
-        </Button>
+        <div className={styles.controlHeader}>Settings</div>
+        <div className={styles.controlGroup}>
+          <Button
+            className={styles.control}
+            disabled={dimension === 3}
+            onClick={() => setDimension(dimension - 1)}>
+            -
+          </Button>
+          <Button
+            className={styles.control}
+            disabled={dimension === 5}
+            onClick={() => setDimension(dimension + 1)}>
+            +
+          </Button>
+          <Button
+            className={styles.control}
+            onClick={() => setShowNumbers(!showNumbers)}>
+            {showNumbers ? 'Labels' : <s>Labels</s>}
+          </Button>
+        </div>
+        <div className={styles.controlHeader}>Gameplay</div>
+        <div className={styles.controlGroup}>
+          <Button
+            className={cn(styles.control, styles.main)}
+            onClick={onClickShuffle}
+            type="button">
+            Shuffle
+          </Button>
+          <Button
+            className={cn(styles.control, styles.main)}
+            onClick={onClickSolve}
+            type="button">
+            Solve
+          </Button>
+        </div>
+        <div className={styles.controlHeader}>Set background</div>
+        <div className={styles.controlGroup}>
+          <BackgroundPicker setBackground={setBackground} />
+        </div>
       </div>
     </div>
   );

@@ -101,7 +101,7 @@ export default function ({ setBackground }) {
   );
 
   return (
-    <div className={styles.backgroundPicker}>
+    <>
       <Button
         className={styles.giphyButton}
         onClick={() => setShowGiphy(!showGiphy)}>
@@ -122,8 +122,8 @@ export default function ({ setBackground }) {
         onChange={onUpload}
       />
       <label className={styles.uploadLabel} htmlFor="image-bg">
-        File
+        Choose file
       </label>
-    </div>
+    </>
   );
 }

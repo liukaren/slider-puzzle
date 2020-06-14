@@ -3,20 +3,30 @@
 // https://tympanus.net/codrops/2013/06/13/creative-button-styles/
 .button {
   background: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: $fontSizeLg;
+  font-size: $fontSizeMd;
   font-weight: bold;
   letter-spacing: 1px;
-  padding: 25px 80px;
+  padding: $gutterSm $gutterMd;
   text-transform: uppercase;
   transition: color $transition, background $transition;
 
   border: 3px solid $color3;
   color: $color3;
-  &:hover,
+  &:hover:not(:disabled),
   &:active {
     color: $color2;
     background: $color3;
+  }
+  &:disabled {
+    border-color: grey;
+    color: grey;
+  }
+  &:focus {
+    outline: none;
+    border-color: $color5;
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
   }
 }

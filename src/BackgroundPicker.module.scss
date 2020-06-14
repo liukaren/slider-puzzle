@@ -1,9 +1,5 @@
 @import 'constants.scss';
 
-.backgroundPicker {
-  margin-top: $gutterMd;
-}
-
 .giphy {
   padding: $gutterMd;
 }
@@ -29,11 +25,11 @@
 
   & + label {
     cursor: pointer;
-    font-family: inherit;
-    font-size: $fontSizeLg;
+    display: inline-block;
+    font-size: $fontSizeMd;
     font-weight: bold;
     letter-spacing: 1px;
-    padding: 25px 80px;
+    padding: $gutterSm $gutterMd;
     text-transform: uppercase;
     transition: color $transition, background $transition;
 
