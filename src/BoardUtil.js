@@ -1,5 +1,10 @@
 import TinyQueue from 'tinyqueue';
 
+// This is a crucial improvement to put more weight on the manhattan/linear conflict
+// distance when comparing the priority of boards. The end solution may not use
+// the minimum number of moves, but it will be found more quickly.
+const HEURISTIC_FACTOR = 2;
+
 export function swapTiles(board, row1, col1, row2, col2) {
   const temp = board[row1][col1];
   board[row1][col1] = board[row2][col2];
@@ -212,7 +217,9 @@ export function generateRandom(dimension) {
 }
 
 function compare(n1, n2) {
-  return n1.heuristic + n1.steps - (n2.heuristic + n2.steps);
+  const priority1 = n1.heuristic * HEURISTIC_FACTOR + n1.steps;
+  const priority2 = n2.heuristic * HEURISTIC_FACTOR + n2.steps;
+  return priority1 - priority2;
 }
 
 export function solve(board, blankRow, blankCol) {
