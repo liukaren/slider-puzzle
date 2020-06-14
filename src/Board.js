@@ -20,9 +20,7 @@ export default function Board() {
   const [dimension, setDimension] = React.useState(3);
   const [showNumbers, setShowNumbers] = React.useState(true);
   const [background, setBackground] = React.useState({
-    url: DefaultBackground,
-    width: 800,
-    height: 588
+    url: DefaultBackground
   });
 
   let [board, setBoard] = React.useState({
@@ -167,15 +165,26 @@ export default function Board() {
   }, [background, dimension]);
 
   // Offsets to center non-square backgrounds
+  // (If we don't know dimensions, don't offset)
   const horizontalOffset = React.useMemo(() => {
-    if (background.height > background.width) return 0;
+    if (
+      !background.width ||
+      !background.height ||
+      background.height > background.width
+    )
+      return 0;
     const excessRatio = background.width / background.height - 1;
     const excessRatioLeft = excessRatio / 2;
     const excessPixelsLeft = excessRatioLeft * dimension * TILE_SIZE;
     return excessPixelsLeft;
   }, [background, dimension]);
   const verticalOffset = React.useMemo(() => {
-    if (background.width > background.height) return 0;
+    if (
+      !background.width ||
+      !background.height ||
+      background.width > background.height
+    )
+      return 0;
     const excessRatio = background.height / background.width - 1;
     const excessRatioTop = excessRatio / 2;
     const excessPixelsTop = excessRatioTop * dimension * TILE_SIZE;
