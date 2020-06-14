@@ -112,6 +112,48 @@ export function manhattan(board) {
   return distance;
 }
 
+export function linearConflict(board) {
+  const dim = board.length;
+
+  let linearConflicts = 0;
+
+  // Check for row conflicts
+  for (let row = 0; row < dim; row++) {
+    for (let col1 = 0; col1 < dim; col1++) {
+      for (let col2 = col1; col2 < dim; col2++) {
+        const tile1 = board[row][col1];
+        const tile2 = board[row][col2];
+        if (tile1 === 0 || tile2 === 0) continue;
+        const goal1 = getGoalPosition(tile1, dim);
+        const goal2 = getGoalPosition(tile2, dim);
+        if (goal1.row === row && goal2.row === row && goal1.col > goal2.col)
+          linearConflicts++;
+      }
+    }
+  }
+
+  // Check for col conflicts
+  for (let col = 0; col < dim; col++) {
+    for (let row1 = 0; row1 < dim; row1++) {
+      for (let row2 = row1; row2 < dim; row2++) {
+        const tile1 = board[row1][col];
+        const tile2 = board[row2][col];
+        if (tile1 === 0 || tile2 === 0) continue;
+        const goal1 = getGoalPosition(tile1, dim);
+        const goal2 = getGoalPosition(tile2, dim);
+        if (goal1.col === col && goal2.col === col && goal1.row > goal2.row)
+          linearConflicts++;
+      }
+    }
+  }
+
+  return linearConflicts;
+}
+
+export function heuristic(board) {
+  return manhattan(board) + 2 * linearConflict(board);
+}
+
 export function deepEqual(board1, board2) {
   if (board1.length !== board2.length) return false;
   for (let row = 0; row < board1.length; row++) {
@@ -170,7 +212,7 @@ export function generateRandom(dimension) {
 }
 
 function compare(n1, n2) {
-  return n1.manhattan + n1.steps - (n2.manhattan + n2.steps);
+  return n1.heuristic + n1.steps - (n2.heuristic + n2.steps);
 }
 
 export function solve(board, blankRow, blankCol) {
@@ -178,7 +220,7 @@ export function solve(board, blankRow, blankCol) {
     board,
     blankRow,
     blankCol,
-    manhattan: manhattan(board),
+    heuristic: heuristic(board),
     steps: 0,
     previous: null
   };
@@ -205,7 +247,7 @@ export function solve(board, blankRow, blankCol) {
 
       queue.push({
         board: nextNeighbor.board,
-        manhattan: manhattan(nextNeighbor.board),
+        heuristic: heuristic(nextNeighbor.board),
         steps: searchNode.steps + 1,
         previous: searchNode,
         blankRow: nextNeighbor.blankRow,

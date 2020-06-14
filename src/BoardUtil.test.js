@@ -5,6 +5,7 @@ import {
   getGoalPosition,
   isGoal,
   isSolvable,
+  linearConflict,
   manhattan,
   neighbors,
   solve
@@ -148,6 +149,104 @@ test('isSolvable', () => {
       1
     )
   ).toBe(false);
+});
+
+test('linearConflict - row conflict', () => {
+  expect(
+    linearConflict([
+      [2, 3, 1],
+      [4, 5, 6],
+      [7, 8, 0]
+    ])
+  ).toBe(2);
+
+  expect(
+    linearConflict([
+      [2, 1, 3],
+      [4, 5, 6],
+      [7, 8, 0]
+    ])
+  ).toBe(1);
+
+  expect(
+    linearConflict([
+      [1, 2, 3],
+      [4, 6, 5],
+      [7, 8, 0]
+    ])
+  ).toBe(1);
+});
+
+test('linearConflict - col conflict', () => {
+  expect(
+    linearConflict([
+      [4, 2, 3],
+      [7, 5, 6],
+      [1, 8, 0]
+    ])
+  ).toBe(2);
+
+  expect(
+    linearConflict([
+      [4, 2, 3],
+      [1, 5, 6],
+      [7, 8, 0]
+    ])
+  ).toBe(1);
+
+  expect(
+    linearConflict([
+      [1, 2, 3],
+      [4, 8, 6],
+      [7, 5, 0]
+    ])
+  ).toBe(1);
+});
+
+test('linearConflict - no conflict', () => {
+  expect(
+    linearConflict([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 0]
+    ])
+  ).toBe(0);
+
+  expect(
+    linearConflict([
+      [1, 7, 2], // 7 is in the way of 2, but 7's goal is in a different row/col
+      [4, 5, 6],
+      [3, 8, 0]
+    ])
+  ).toBe(0);
+
+  // All are in the correct spot or in both wrong row and col
+  expect(
+    linearConflict([
+      [5, 2, 3],
+      [4, 1, 6],
+      [7, 8, 0]
+    ])
+  ).toBe(0);
+
+  // Blank spot does not count as linear conflict
+  expect(
+    linearConflict([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 0, 8]
+    ])
+  ).toBe(0);
+});
+
+test('linearConflict - other examples', () => {
+  expect(
+    linearConflict([
+      [4, 2, 5],
+      [1, 0, 6],
+      [3, 8, 7]
+    ])
+  ).toBe(2);
 });
 
 test('manhattan', () => {
