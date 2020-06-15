@@ -1,17 +1,34 @@
 @import 'constants.scss';
 
-.giphy {
+$imgSize: 150px;
+
+.modal {
   padding: $gutterMd;
 }
 
-.giphyResults {
-  margin-top: $gutterMd;
+.modalResults {
   height: 60vh;
+  margin-top: $gutterMd;
   overflow: auto;
+  text-align: center;
 }
 
-.giphyButton {
+.flickrResults {
+  margin-right: -$gutterMd;
+  margin-bottom: -$gutterMd;
+  width: $imgSize * 3 + $gutterMd * 4;
+}
+
+.flickrResult {
+  cursor: pointer;
+  width: $imgSize;
   margin-right: $gutterMd;
+  margin-bottom: $gutterMd;
+  vertical-align: middle;
+}
+
+.button {
+  @include marginRightUnlessLast($gutterMd);
 }
 
 .uploadInput {

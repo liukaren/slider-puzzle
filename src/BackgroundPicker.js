@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { Grid } from '@giphy/react-components';
 import React from 'react';
@@ -6,9 +7,92 @@ import Modal from './Modal';
 import SearchInput from './SearchInput';
 import styles from './BackgroundPicker.module.scss';
 
+const DEBOUNCE_MS = 500;
+const FETCH_LIMIT = 21;
+
 const GF = new GiphyFetch('wEjpTQrDHjj0hPtF6NUQFB26bcrn0byC');
-const FETCH_LIMIT = 10;
-const GIPHY_DEBOUNCE_MS = 500;
+const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
+
+function FlickrBackgroundPicker({ setBackground, onClose }) {
+  const [debounceTimer, setDebounceTimeout] = React.useState(null);
+  const [photos, setPhotos] = React.useState(null);
+
+  const onSelect = React.useCallback(
+    photo => {
+      setBackground({
+        url: photo.url_m,
+        width: photo.width_m,
+        height: photo.height_m
+      });
+      onClose();
+    },
+    [setBackground, onClose]
+  );
+
+  React.useEffect(() => {
+    async function fetchPopular() {
+      const response = await fetch(
+        `https://www.flickr.com/services/rest/` +
+          `?api_key=${FLICKR_API_KEY}` +
+          `&format=json` +
+          `&nojsoncallback=1` +
+          `&per_page=${FETCH_LIMIT}` +
+          `&extras=url_m,url_m,o_dims` +
+          `&method=flickr.interestingness.getList`
+      );
+      const jsonResponse = await response.json();
+      if (!photos) setPhotos(jsonResponse.photos.photo);
+    }
+    if (!photos) fetchPopular();
+  }, [photos]);
+
+  const searchRequest = React.useCallback(async searchTerm => {
+    const response = await fetch(
+      `https://www.flickr.com/services/rest/` +
+        `?api_key=${FLICKR_API_KEY}` +
+        `&format=json` +
+        `&nojsoncallback=1` +
+        `&per_page=${FETCH_LIMIT}` +
+        `&extras=url_m,url_m,o_dims` +
+        `&method=flickr.photos.search` +
+        `&tags=${searchTerm}` +
+        `&sort=relevance` +
+        `&content_type=1`
+    );
+    const jsonResponse = await response.json();
+    setPhotos(jsonResponse.photos.photo);
+  }, []);
+
+  const onInputChange = React.useCallback(
+    e => {
+      const searchTerm = e.target.value;
+      clearTimeout(debounceTimer);
+      const timer = setTimeout(() => searchRequest(searchTerm), DEBOUNCE_MS);
+      setDebounceTimeout(timer);
+    },
+    [debounceTimer, searchRequest]
+  );
+
+  return (
+    <Modal onClose={onClose}>
+      <div className={styles.modal}>
+        <SearchInput onChange={onInputChange} />
+        <div className={cn(styles.modalResults, styles.flickrResults)}>
+          {photos &&
+            photos.map(photo => (
+              <img
+                alt={photo.title}
+                className={styles.flickrResult}
+                key={photo.id}
+                onClick={() => onSelect(photo)}
+                src={photo.url_m}
+              />
+            ))}
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 function GiphyBackgroundPicker({ setBackground, onClose }) {
   const [search, setSearch] = React.useState(null);
@@ -44,10 +128,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
     e => {
       const searchTerm = e.target.value;
       clearTimeout(debounceTimer);
-      const timer = setTimeout(
-        () => searchRequest(searchTerm),
-        GIPHY_DEBOUNCE_MS
-      );
+      const timer = setTimeout(() => searchRequest(searchTerm), DEBOUNCE_MS);
       setDebounceTimeout(timer);
     },
     [debounceTimer, searchRequest]
@@ -55,9 +136,9 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
 
   return (
     <Modal onClose={onClose}>
-      <div className={styles.giphy}>
+      <div className={styles.modal}>
         <SearchInput onChange={onInputChange} />
-        <div className={styles.giphyResults}>
+        <div className={styles.modalResults}>
           {showResults && (
             <Grid
               width={400}
@@ -75,6 +156,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
 
 export default function ({ setBackground }) {
   const [showGiphy, setShowGiphy] = React.useState(false);
+  const [showFlickr, setShowFlickr] = React.useState(false);
   const imageUpload = React.useRef();
 
   const onUpload = React.useCallback(
@@ -103,10 +185,21 @@ export default function ({ setBackground }) {
   return (
     <>
       <Button
-        className={styles.giphyButton}
+        className={styles.button}
         onClick={() => setShowGiphy(!showGiphy)}>
         Giphy
       </Button>
+      <Button
+        className={styles.button}
+        onClick={() => setShowFlickr(!showFlickr)}>
+        Flickr
+      </Button>
+      {showFlickr && (
+        <FlickrBackgroundPicker
+          onClose={() => setShowFlickr(false)}
+          setBackground={setBackground}
+        />
+      )}
       {showGiphy && (
         <GiphyBackgroundPicker
           onClose={() => setShowGiphy(false)}
