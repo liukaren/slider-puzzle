@@ -17,7 +17,7 @@ const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 const TILE_SIZE = 100; // Sync with constants.scss
 
 export default function Board() {
-  const [dimension, setDimension] = React.useState(3);
+  const [dimension, setDimension] = React.useState(4);
   const [showNumbers, setShowNumbers] = React.useState(true);
   const [background, setBackground] = React.useState({
     url: DefaultBackground
@@ -35,8 +35,12 @@ export default function Board() {
     col: null
   });
 
-  // Ensure animation callbacks always read latest state
+  // Refs ensure animation callbacks always read latest state
   // https://reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function
+
+  const [isSolving, setSolving] = React.useState(false); // For proper text on button
+  const isSolvingRef = React.useRef(false); // For whether or not to actually run solution
+
   const boardRef = React.useRef(board);
   boardRef.current = board;
 
@@ -93,7 +97,8 @@ export default function Board() {
 
   const onClickTile = React.useCallback(
     (row, col) => {
-      if (animation.animation) return Promise.resolve(); // Ignore clicks during animation
+      // Ignore clicks while an animation or a solution is playing
+      if (animation.animation || isSolving) return Promise.resolve();
 
       const { blankRow, blankCol } = boardRef.current;
       if (row - 1 === blankRow && col === blankCol) {
@@ -109,7 +114,7 @@ export default function Board() {
       // Not adjacent to blank space, do nothing
       return Promise.resolve();
     },
-    [moveTile, animation, boardRef]
+    [isSolving, moveTile, animation, boardRef]
   );
 
   const onClickShuffle = React.useCallback(() => {
@@ -128,16 +133,31 @@ export default function Board() {
     }
   }, [dimension]);
 
+  const onClickStop = React.useCallback(() => {
+    setSolving(false);
+    isSolvingRef.current = false;
+  }, []);
+
   const onClickSolve = React.useCallback(() => {
     const solution = solve(board.tiles, board.blankRow, board.blankCol);
 
+    setSolving(true);
+    isSolvingRef.current = true;
     // Chain all steps of the solution into serial promises
-    solution.reduce(
-      (promise, nextStep) =>
-        promise.then(() => onClickTile(nextStep.blankRow, nextStep.blankCol)),
-      Promise.resolve()
-    );
-  }, [onClickTile, board]);
+    solution
+      .reduce(
+        (promise, nextStep) =>
+          promise.then(() => {
+            if (isSolvingRef.current)
+              return onClickTile(nextStep.blankRow, nextStep.blankCol);
+          }),
+        Promise.resolve()
+      )
+      .then(() => {
+        setSolving(false);
+        isSolvingRef.current = false;
+      });
+  }, [isSolvingRef, onClickTile, board]);
 
   // Fit to smaller dimension ("cover" background style)
   // (If we don't know dimensions, stretch in both dimensions)
@@ -242,13 +262,13 @@ export default function Board() {
         <div className={styles.controlGroup}>
           <Button
             className={styles.control}
-            disabled={dimension === 3}
+            disabled={dimension === 3 || isSolving}
             onClick={() => setDimension(dimension - 1)}>
             -
           </Button>
           <Button
             className={styles.control}
-            disabled={dimension === 5}
+            disabled={dimension === 5 || isSolving}
             onClick={() => setDimension(dimension + 1)}>
             +
           </Button>
@@ -262,15 +282,16 @@ export default function Board() {
         <div className={styles.controlGroup}>
           <Button
             className={cn(styles.control, styles.main)}
+            disabled={isSolving}
             onClick={onClickShuffle}
             type="button">
             Shuffle
           </Button>
           <Button
             className={cn(styles.control, styles.main)}
-            onClick={onClickSolve}
+            onClick={isSolving ? onClickStop : onClickSolve}
             type="button">
-            Solve
+            {isSolving ? 'Stop' : 'Solve'}
           </Button>
         </div>
         <div className={styles.controlHeader}>Set background</div>
