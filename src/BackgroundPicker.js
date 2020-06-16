@@ -5,10 +5,13 @@ import Button from './Button';
 import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
+import { useViewport } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const DEBOUNCE_MS = 500;
 const FETCH_LIMIT = 21;
+const MAX_WIDTH_PX = 600;
+const GUTTER_LG_PX = 32;
 
 const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
 
@@ -72,9 +75,12 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
     [debounceTimer, searchRequest]
   );
 
+  const windowWidth = useViewport().width;
+  const modalWidth = Math.min(MAX_WIDTH_PX, windowWidth);
+
   return (
     <Modal onClose={onClose}>
-      <div className={styles.modal}>
+      <div className={styles.modal} style={{ width: modalWidth }}>
         <SearchInput onChange={onInputChange} />
         <div className={cn(styles.modalResults, styles.flickrResults)}>
           {photos &&
@@ -133,6 +139,9 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
     [debounceTimer, searchRequest]
   );
 
+  const windowWidth = useViewport().width;
+  const gridWidth = Math.min(MAX_WIDTH_PX, windowWidth) - GUTTER_LG_PX;
+
   return (
     <Modal onClose={onClose}>
       <div className={styles.modal}>
@@ -140,7 +149,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
         <div className={styles.modalResults}>
           {showResults && (
             <Grid
-              width={400}
+              width={gridWidth}
               columns={3}
               hideAttribution
               fetchGifs={fetchGifs}

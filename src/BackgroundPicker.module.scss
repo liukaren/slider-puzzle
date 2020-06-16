@@ -3,11 +3,16 @@
 $imgSize: 150px;
 
 .modal {
-  padding: $gutterMd;
+  padding: $gutterLg;
+  height: 100vh;
+  max-height: 500px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalResults {
-  height: 60vh;
+  flex: 1;
   margin-top: $gutterMd;
   overflow: auto;
   text-align: center;
@@ -16,7 +21,6 @@ $imgSize: 150px;
 .flickrResults {
   margin-right: -$gutterMd;
   margin-bottom: -$gutterMd;
-  width: $imgSize * 3 + $gutterMd * 4;
 }
 
 .flickrResult {
