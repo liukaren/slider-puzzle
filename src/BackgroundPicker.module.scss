@@ -1,14 +1,43 @@
 @import 'constants.scss';
 
 $imgSize: 150px;
+$maxWidth: 600px; // Sync with BackgroundPicker.js
 
 .modal {
   padding: $gutterLg;
   height: 100vh;
-  max-height: 500px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+}
+
+// If the window is bigger than the modal, cap its height.
+// Otherwise allow the modal to expand to full window height
+@media (min-width: $maxWidth) {
+  .modal {
+    max-height: 500px;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.search {
+  flex: 1;
+}
+
+.closeIcon {
+  cursor: pointer;
+  margin-left: $gutterMd;
+  width: 50px;
+  height: 50px;
+
+  fill: $colorDark;
+  &:hover {
+    fill: $colorAccent;
+  }
 }
 
 .modalResults {

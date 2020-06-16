@@ -5,12 +5,13 @@ import Button from './Button';
 import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
+import { ReactComponent as CloseIcon } from './images/times.svg';
 import { useViewport } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const DEBOUNCE_MS = 500;
 const FETCH_LIMIT = 21;
-const MAX_WIDTH_PX = 600;
+const MAX_WIDTH_PX = 600; // Sync with BackgroundPicker.module.scss
 const GUTTER_LG_PX = 32;
 
 const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
@@ -81,7 +82,10 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
   return (
     <Modal onClose={onClose}>
       <div className={styles.modal} style={{ width: modalWidth }}>
-        <SearchInput onChange={onInputChange} />
+        <div className={styles.header}>
+          <SearchInput onChange={onInputChange} className={styles.search} />
+          <CloseIcon onClick={onClose} className={styles.closeIcon} />
+        </div>
         <div className={cn(styles.modalResults, styles.flickrResults)}>
           {photos &&
             photos.map(photo => (
@@ -145,7 +149,10 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
   return (
     <Modal onClose={onClose}>
       <div className={styles.modal}>
-        <SearchInput onChange={onInputChange} />
+        <div className={styles.header}>
+          <SearchInput onChange={onInputChange} className={styles.search} />
+          <CloseIcon onClick={onClose} className={styles.closeIcon} />
+        </div>
         <div className={styles.modalResults}>
           {showResults && (
             <Grid
