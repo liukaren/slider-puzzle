@@ -27,7 +27,7 @@ const MAX_TILE_PX = 100;
 const GUTTER_MD_PX = 16;
 
 const MIN_DIMENSION = 3;
-const MAX_DIMENSION = 5;
+const MAX_DIMENSION = 4;
 const DEFAULT_DIMENSION = 4;
 
 export default function Board() {
