@@ -2,7 +2,7 @@
 
 .input {
   border: 0;
-  color: $colorDark;
+  color: $colorMain;
   font-size: $fontSizeLg;
   font-weight: bold;
   letter-spacing: 1px;
@@ -18,12 +18,12 @@
   width: $fontSizeLg;
   height: $fontSizeLg;
   margin-left: $gutterMd;
-  fill: $colorDark;
+  fill: $colorMain;
 }
 
 .wrapper {
   display: flex;
   align-items: center;
-  border: 3px solid $colorDark;
+  border: 3px solid $colorMain;
   padding: $gutterMd;
 }

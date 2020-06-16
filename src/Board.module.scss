@@ -1,9 +1,9 @@
 @import 'constants.scss';
 
 .title {
-  border-top: 1px solid $colorLight;
-  border-bottom: 1px solid $colorLight;
-  color: $colorLight;
+  border-top: 1px solid $colorContrast;
+  border-bottom: 1px solid $colorContrast;
+  color: $colorContrast;
   font-size: $fontSizeXl;
   letter-spacing: 1px;
   margin: 0 0 $gutterLg;
@@ -37,7 +37,7 @@
 
   border: 1px solid transparent; // For consistent sizing
   &.nonEmpty {
-    border: 1px solid $colorLight;
+    border: 1px solid $colorContrast;
     cursor: pointer;
 
     position: relative;
@@ -53,7 +53,7 @@
 
   @include centerChildren();
   & > .number {
-    color: $colorLight;
+    color: $colorContrast;
     font-size: 40px;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -82,9 +82,9 @@
 
 .controlHeader {
   display: inline-block;
-  color: $colorLight;
-  border-top: 1px solid $colorLight;
-  border-bottom: 1px solid $colorLight;
+  color: $colorContrast;
+  border-top: 1px solid $colorContrast;
+  border-bottom: 1px solid $colorContrast;
   font-size: $fontSizeSm;
   font-weight: bold;
   letter-spacing: 1px;

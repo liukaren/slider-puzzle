@@ -9,21 +9,21 @@
   text-transform: uppercase;
   transition: color $transition, background $transition;
 
-  border: 3px solid $colorLight;
-  background-color: $colorDark;
-  color: $colorLight;
+  border: 3px solid $colorContrast;
+  background-color: $colorMain;
+  color: $colorContrast;
 
   // Sync with BackgroundPicker.module.scss .uploadButton
   &:hover:not(:disabled),
   &:active {
-    color: $colorAccent;
-    background: $colorLight;
+    color: $colorSecondary;
+    background: $colorContrast;
   }
 
   // Sync with BackgroundPicker.module.scss .uploadButton
   &:focus {
     outline: none;
-    border-color: $colorAccent;
+    border-color: $colorSecondary;
   }
 
   &:disabled {
