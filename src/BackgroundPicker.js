@@ -88,16 +88,17 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
           <CloseIcon onClick={onClose} className={styles.closeIcon} />
         </div>
         <div className={cn(styles.modalResults, styles.flickrResults)}>
-          {photos &&
-            photos.map(photo => (
-              <img
-                alt={photo.title}
-                className={styles.flickrResult}
-                key={photo.id}
-                onClick={() => onSelect(photo)}
-                src={photo.url_m}
-              />
-            ))}
+          {photos && photos.length > 0
+            ? photos.map(photo => (
+                <img
+                  alt={photo.title}
+                  className={styles.flickrResult}
+                  key={photo.id}
+                  onClick={() => onSelect(photo)}
+                  src={photo.url_m}
+                />
+              ))
+            : 'No results.'}
         </div>
       </div>
     </Modal>
