@@ -1,8 +1,8 @@
 import cn from 'classnames';
-import { GiphyFetch } from '@giphy/js-fetch-api';
 import { Grid } from '@giphy/react-components';
 import React from 'react';
 import Button from './Button';
+import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
 import styles from './BackgroundPicker.module.scss';
@@ -10,7 +10,6 @@ import styles from './BackgroundPicker.module.scss';
 const DEBOUNCE_MS = 500;
 const FETCH_LIMIT = 21;
 
-const GF = new GiphyFetch('wEjpTQrDHjj0hPtF6NUQFB26bcrn0byC');
 const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
 
 function FlickrBackgroundPicker({ setBackground, onClose }) {

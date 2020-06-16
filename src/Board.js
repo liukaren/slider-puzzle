@@ -2,6 +2,7 @@ import cn from 'classnames';
 import React from 'react';
 import BackgroundPicker from './BackgroundPicker';
 import Button from './Button';
+import GF from './Giphy';
 import styles from './Board.module.scss';
 import {
   swapTiles,
@@ -10,7 +11,6 @@ import {
   getGoalPosition,
   solve
 } from './BoardUtil';
-import DefaultBackground from './images/bg.jpg'; // TODO: Remove
 
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
@@ -19,9 +19,6 @@ const TILE_SIZE = 100; // Sync with constants.scss
 export default function Board() {
   const [dimension, setDimension] = React.useState(4);
   const [showNumbers, setShowNumbers] = React.useState(true);
-  const [background, setBackground] = React.useState({
-    url: DefaultBackground
-  });
 
   let [board, setBoard] = React.useState({
     tiles: generateSolved(dimension),
@@ -53,6 +50,15 @@ export default function Board() {
       blankCol: dimension - 1
     });
   }, [dimension]);
+
+  // Select a random background from Giphy on load
+  React.useEffect(() => {
+    GF.random({ tag: 'cute animal' }).then(result => {
+      setBackground(result.data.images.downsized);
+    });
+  }, []);
+
+  const [background, setBackground] = React.useState(null);
 
   const sound = React.useMemo(() => {
     return document.getElementById('sound-tile');
@@ -163,6 +169,7 @@ export default function Board() {
   // (If we don't know dimensions, stretch in both dimensions)
   const backgroundWidth = React.useMemo(() => {
     if (
+      !background ||
       !background.width ||
       !background.height ||
       background.width < background.height
@@ -174,6 +181,7 @@ export default function Board() {
   }, [background, dimension]);
   const backgroundHeight = React.useMemo(() => {
     if (
+      !background ||
       !background.width ||
       !background.height ||
       background.height < background.width
@@ -188,6 +196,7 @@ export default function Board() {
   // (If we don't know dimensions, don't offset)
   const horizontalOffset = React.useMemo(() => {
     if (
+      !background ||
       !background.width ||
       !background.height ||
       background.height > background.width
@@ -200,6 +209,7 @@ export default function Board() {
   }, [background, dimension]);
   const verticalOffset = React.useMemo(() => {
     if (
+      !background ||
       !background.width ||
       !background.height ||
       background.width > background.height
@@ -244,7 +254,8 @@ export default function Board() {
                     style={
                       tile !== 0
                         ? {
-                            backgroundImage: `url("${background.url}")`,
+                            backgroundImage:
+                              background && `url("${background.url}")`,
                             backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
                             backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`
                           }
