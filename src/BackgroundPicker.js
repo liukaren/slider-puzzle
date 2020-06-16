@@ -1,7 +1,8 @@
-import cn from 'classnames';
 import { Grid } from '@giphy/react-components';
+import cn from 'classnames';
 import React from 'react';
 import Button from './Button';
+import { flickrApiCall } from './Flickr';
 import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
@@ -10,11 +11,9 @@ import { useViewport } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const DEBOUNCE_MS = 500;
-const FETCH_LIMIT = 21;
 const MAX_WIDTH_PX = 600; // Sync with BackgroundPicker.module.scss
 const GUTTER_LG_PX = 32;
-
-const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
+const FETCH_LIMIT = 21;
 
 function FlickrBackgroundPicker({ setBackground, onClose }) {
   const [debounceTimer, setDebounceTimeout] = React.useState(null);
@@ -33,38 +32,19 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
   );
 
   React.useEffect(() => {
-    async function fetchPopular() {
-      const response = await fetch(
-        `https://www.flickr.com/services/rest/` +
-          `?api_key=${FLICKR_API_KEY}` +
-          `&format=json` +
-          `&nojsoncallback=1` +
-          `&per_page=${FETCH_LIMIT}` +
-          `&extras=url_m,url_m,o_dims` +
-          `&method=flickr.interestingness.getList`
-      );
-      const jsonResponse = await response.json();
-      if (!photos) setPhotos(jsonResponse.photos.photo);
-    }
-    if (!photos) fetchPopular();
-  }, [photos]);
+    flickrApiCall('flickr.interestingness.getList', {
+      per_page: FETCH_LIMIT
+    }).then(response => setPhotos(response.photos.photo));
+  }, []);
 
   const searchRequest = React.useCallback(async searchTerm => {
     if (!searchTerm) return;
-    const response = await fetch(
-      `https://www.flickr.com/services/rest/` +
-        `?api_key=${FLICKR_API_KEY}` +
-        `&format=json` +
-        `&nojsoncallback=1` +
-        `&per_page=${FETCH_LIMIT}` +
-        `&extras=url_m,url_m,o_dims` +
-        `&method=flickr.photos.search` +
-        `&tags=${searchTerm}` +
-        `&sort=relevance` +
-        `&content_type=1`
-    );
-    const jsonResponse = await response.json();
-    setPhotos(jsonResponse.photos.photo);
+    flickrApiCall('flickr.photos.search', {
+      per_page: FETCH_LIMIT,
+      tags: searchTerm,
+      sort: 'relevance',
+      content_type: 1
+    }).then(response => setPhotos(response.photos.photo));
   }, []);
 
   const onInputChange = React.useCallback(
