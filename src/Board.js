@@ -168,26 +168,15 @@ export default function Board() {
   }, [isSolvingRef, onClickTile, board]);
 
   // Fit to smaller dimension ("cover" background style)
-  // (If we don't know dimensions, stretch in both dimensions)
   const backgroundWidth = React.useMemo(() => {
-    if (
-      !background ||
-      !background.width ||
-      !background.height ||
-      background.width < background.height
-    ) {
+    if (!background || background.width < background.height) {
       return 100 * dimension;
     } else {
       return 100 * (background.width / background.height) * dimension;
     }
   }, [background, dimension]);
   const backgroundHeight = React.useMemo(() => {
-    if (
-      !background ||
-      !background.width ||
-      !background.height ||
-      background.height < background.width
-    ) {
+    if (!background || background.height < background.width) {
       return 100 * dimension;
     } else {
       return 100 * (background.height / background.width) * dimension;
@@ -200,28 +189,15 @@ export default function Board() {
   }, [windowWidth]);
 
   // Offsets to center non-square backgrounds
-  // (If we don't know dimensions, don't offset)
   const horizontalOffset = React.useMemo(() => {
-    if (
-      !background ||
-      !background.width ||
-      !background.height ||
-      background.height > background.width
-    )
-      return 0;
+    if (!background || background.height > background.width) return 0;
     const excessRatio = background.width / background.height - 1;
     const excessRatioLeft = excessRatio / 2;
     const excessPixelsLeft = excessRatioLeft * dimension * tileSize;
     return excessPixelsLeft;
   }, [background, dimension, tileSize]);
   const verticalOffset = React.useMemo(() => {
-    if (
-      !background ||
-      !background.width ||
-      !background.height ||
-      background.width > background.height
-    )
-      return 0;
+    if (!background || background.width > background.height) return 0;
     const excessRatio = background.height / background.width - 1;
     const excessRatioTop = excessRatio / 2;
     const excessPixelsTop = excessRatioTop * dimension * tileSize;
