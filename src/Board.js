@@ -174,7 +174,10 @@ export default function Board() {
         (promise, nextStep) =>
           promise.then(() => {
             if (isSolvingRef.current)
+              // Run next step of solution
               return onClickTile(nextStep.blankRow, nextStep.blankCol);
+            // Abort subsequent steps when user hits "Stop"
+            else return Promise.reject();
           }),
         Promise.resolve()
       )
