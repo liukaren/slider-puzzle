@@ -11,20 +11,22 @@ import { useViewport } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const DEBOUNCE_MS = 500;
-const MAX_WIDTH_PX = 600; // Sync with BackgroundPicker.module.scss
+const MAX_WIDTH_PX = 600;
+const HEIGHT_PX = 600;
 const GUTTER_LG_PX = 32;
 const FETCH_LIMIT = 21;
 
 function FlickrBackgroundPicker({ setBackground, onClose }) {
   const [debounceTimer, setDebounceTimeout] = React.useState(null);
   const [photos, setPhotos] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
   const onSelect = React.useCallback(
     photo => {
       setBackground({
-        url: photo.url_m,
-        width: photo.width_m,
-        height: photo.height_m
+        url: photo.url_z,
+        width: photo.width_z,
+        height: photo.height_z
       });
       onClose();
     },
@@ -32,19 +34,27 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
   );
 
   React.useEffect(() => {
+    setLoading(true);
     flickrApiCall('flickr.interestingness.getList', {
       per_page: FETCH_LIMIT
-    }).then(response => setPhotos(response.photos.photo));
+    }).then(response => {
+      setPhotos(response.photos.photo);
+      setLoading(false);
+    });
   }, []);
 
   const searchRequest = React.useCallback(async searchTerm => {
     if (!searchTerm) return;
+    setLoading(true);
     flickrApiCall('flickr.photos.search', {
       per_page: FETCH_LIMIT,
       tags: searchTerm,
       sort: 'relevance',
       content_type: 1
-    }).then(response => setPhotos(response.photos.photo));
+    }).then(response => {
+      setPhotos(response.photos.photo);
+      setLoading(false);
+    });
   }, []);
 
   const onInputChange = React.useCallback(
@@ -59,26 +69,45 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
 
   const windowWidth = useViewport().width;
   const modalWidth = Math.min(MAX_WIDTH_PX, windowWidth);
+  // If the modal fills the width, then also fill the height
+  const modalHeight = windowWidth > MAX_WIDTH_PX ? HEIGHT_PX : '100vh';
 
   return (
     <Modal onClose={onClose}>
-      <div className={styles.modal} style={{ width: modalWidth }}>
+      <div
+        className={styles.modal}
+        style={{ width: modalWidth, maxHeight: modalHeight }}>
         <div className={styles.header}>
           <SearchInput onChange={onInputChange} className={styles.search} />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />
         </div>
         <div className={cn(styles.modalResults, styles.flickrResults)}>
-          {photos && photos.length > 0
-            ? photos.map(photo => (
-                <img
-                  alt={photo.title}
-                  className={styles.flickrResult}
-                  key={photo.id}
-                  onClick={() => onSelect(photo)}
-                  src={photo.url_m}
-                />
-              ))
-            : 'No results.'}
+          {/* Loading state */}
+          {loading && (
+            <>
+              <div className={styles.flickrPlaceholder} />
+              <div className={styles.flickrPlaceholder} />
+              <div className={styles.flickrPlaceholder} />
+              <div className={styles.flickrPlaceholder} />
+              <div className={styles.flickrPlaceholder} />
+              <div className={styles.flickrPlaceholder} />
+            </>
+          )}
+          {/* Loaded state */}
+          {!loading &&
+            photos &&
+            photos.length > 0 &&
+            photos.map(photo => (
+              <img
+                alt={photo.title}
+                className={styles.flickrResult}
+                key={photo.id}
+                onClick={() => onSelect(photo)}
+                src={photo.url_q}
+              />
+            ))}
+          {/* Empty state */}
+          {!loading && photos && photos.length === 0 && 'No results.'}
         </div>
       </div>
     </Modal>
@@ -126,11 +155,13 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
   );
 
   const windowWidth = useViewport().width;
-  const gridWidth = Math.min(MAX_WIDTH_PX, windowWidth) - GUTTER_LG_PX;
+  const gridWidth = Math.min(MAX_WIDTH_PX, windowWidth) - GUTTER_LG_PX * 2;
+  // If the modal fills the width, then also fill the height
+  const modalHeight = windowWidth > MAX_WIDTH_PX ? HEIGHT_PX : '100vh';
 
   return (
     <Modal onClose={onClose}>
-      <div className={styles.modal}>
+      <div className={styles.modal} style={{ maxHeight: modalHeight }}>
         <div className={styles.header}>
           <SearchInput onChange={onInputChange} className={styles.search} />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />

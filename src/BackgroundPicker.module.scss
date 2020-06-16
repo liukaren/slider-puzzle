@@ -1,7 +1,6 @@
 @import 'constants.scss';
 
-$imgSize: 150px;
-$maxWidth: 600px; // Sync with BackgroundPicker.js
+$imgSize: 170px;
 
 .modal {
   padding: $gutterLg;
@@ -9,14 +8,6 @@ $maxWidth: 600px; // Sync with BackgroundPicker.js
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-}
-
-// If the window is bigger than the modal, cap its height.
-// Otherwise allow the modal to expand to full window height
-@media (min-width: $maxWidth) {
-  .modal {
-    max-height: 500px;
-  }
 }
 
 .header {
@@ -42,7 +33,7 @@ $maxWidth: 600px; // Sync with BackgroundPicker.js
 
 .modalResults {
   flex: 1;
-  margin-top: $gutterMd;
+  margin-top: $gutterLg;
   overflow: auto;
   text-align: center;
 }
@@ -52,11 +43,22 @@ $maxWidth: 600px; // Sync with BackgroundPicker.js
   margin-bottom: -$gutterMd;
 }
 
-.flickrResult {
-  cursor: pointer;
+.flickrResult,
+.flickrPlaceholder {
   width: $imgSize;
+  height: $imgSize;
   margin-right: $gutterMd;
   margin-bottom: $gutterMd;
+}
+
+.flickrPlaceholder {
+  display: inline-block;
+  background-color: $colorSecondary;
+  animation: pulse 1s alternate infinite;
+}
+
+.flickrResult {
+  cursor: pointer;
   vertical-align: middle;
 }
 

@@ -36,3 +36,12 @@ $zIndexModal: 10;
   align-items: center;
   justify-content: center;
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

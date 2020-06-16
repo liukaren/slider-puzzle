@@ -5,7 +5,7 @@ const REQUEST_PARAMS = {
   api_key: FLICKR_API_KEY,
   format: 'json',
   nojsoncallback: 1,
-  extras: ['url_m', 'url_m', 'o_dims'].join(',')
+  extras: ['url_z', 'url_q', 'o_dims'].join(',')
 };
 
 export async function flickrApiCall(method, params) {
