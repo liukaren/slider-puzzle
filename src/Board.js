@@ -3,6 +3,7 @@ import React from 'react';
 import BackgroundPicker from './BackgroundPicker';
 import Button from './Button';
 import GF from './Giphy';
+import { useViewport } from './util';
 import styles from './Board.module.scss';
 import {
   swapTiles,
@@ -14,7 +15,8 @@ import {
 
 const ANIMATION_MS = 250;
 const AUDIO_DELAY_MS = ANIMATION_MS / 2;
-const TILE_SIZE = 100; // Sync with constants.scss
+const MAX_TILE_PX = 100;
+const GUTTER_MD_PX = 16;
 
 export default function Board() {
   const [dimension, setDimension] = React.useState(4);
@@ -192,6 +194,11 @@ export default function Board() {
     }
   }, [background, dimension]);
 
+  const windowWidth = useViewport().width;
+  const tileSize = React.useMemo(() => {
+    return Math.min(MAX_TILE_PX, (windowWidth - GUTTER_MD_PX * 2) / 5);
+  }, [windowWidth]);
+
   // Offsets to center non-square backgrounds
   // (If we don't know dimensions, don't offset)
   const horizontalOffset = React.useMemo(() => {
@@ -204,9 +211,9 @@ export default function Board() {
       return 0;
     const excessRatio = background.width / background.height - 1;
     const excessRatioLeft = excessRatio / 2;
-    const excessPixelsLeft = excessRatioLeft * dimension * TILE_SIZE;
+    const excessPixelsLeft = excessRatioLeft * dimension * tileSize;
     return excessPixelsLeft;
-  }, [background, dimension]);
+  }, [background, dimension, tileSize]);
   const verticalOffset = React.useMemo(() => {
     if (
       !background ||
@@ -217,9 +224,9 @@ export default function Board() {
       return 0;
     const excessRatio = background.height / background.width - 1;
     const excessRatioTop = excessRatio / 2;
-    const excessPixelsTop = excessRatioTop * dimension * TILE_SIZE;
+    const excessPixelsTop = excessRatioTop * dimension * tileSize;
     return excessPixelsTop;
-  }, [background, dimension]);
+  }, [background, dimension, tileSize]);
 
   return (
     <>
@@ -233,10 +240,10 @@ export default function Board() {
 
                 // Use goal position to calculate background
                 const backgroundPositionX = Math.ceil(
-                  goal.col * -TILE_SIZE - horizontalOffset
+                  goal.col * -tileSize - horizontalOffset
                 );
                 const backgroundPositionY = Math.ceil(
-                  goal.row * -TILE_SIZE - verticalOffset
+                  goal.row * -tileSize - verticalOffset
                 );
 
                 return (
@@ -254,12 +261,17 @@ export default function Board() {
                     style={
                       tile !== 0
                         ? {
+                            width: tileSize,
+                            height: tileSize,
                             backgroundImage:
                               background && `url("${background.url}")`,
                             backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
                             backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`
                           }
-                        : undefined
+                        : {
+                            width: tileSize,
+                            height: tileSize
+                          }
                     }>
                     {tile !== 0 && showNumbers && (
                       <div className={styles.number}>{tile}</div>

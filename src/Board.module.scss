@@ -19,11 +19,7 @@
 }
 
 .board {
-  margin-bottom: $gutterMd;
-
-  // Prevents jumping when toggling board dimensions
-  min-width: $tileSize * 4 + $gutterMd * 2;
-  min-height: $tileSize * 4 + $gutterMd * 2;
+  margin-bottom: $gutterLg;
 
   display: flex;
   flex-direction: column;
@@ -36,11 +32,8 @@
 }
 
 .tile {
-  user-select: none;
-
-  height: $tileSize;
-  width: $tileSize;
   background-repeat: no-repeat;
+  user-select: none;
 
   border: 1px solid transparent; // For consistent sizing
   &.nonEmpty {
