@@ -12,18 +12,23 @@
   border: 3px solid $colorLight;
   background-color: $colorDark;
   color: $colorLight;
+
+  // Sync with BackgroundPicker.module.scss .uploadButton
   &:hover:not(:disabled),
   &:active {
     color: $colorAccent;
     background: $colorLight;
   }
-  &:disabled {
-    border-color: grey;
-    color: grey;
-  }
+
+  // Sync with BackgroundPicker.module.scss .uploadButton
   &:focus {
     outline: none;
     border-color: $colorAccent;
+  }
+
+  &:disabled {
+    border-color: grey;
+    color: grey;
   }
 
   &:not(:disabled) {

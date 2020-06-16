@@ -225,15 +225,16 @@ export default function ({ setBackground, buttonClassName }) {
       <input
         type="file"
         id="image-bg"
-        name="image-bg"
         className={styles.uploadInput}
         ref={imageUpload}
         onChange={onUpload}
       />
-      <label
-        className={cn(styles.uploadLabel, buttonClassName)}
-        htmlFor="image-bg">
-        Upload
+      <label htmlFor="image-bg">
+        <Button
+          tabIndex={-1}
+          className={cn(styles.uploadButton, buttonClassName)}>
+          Upload
+        </Button>
       </label>
     </>
   );

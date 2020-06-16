@@ -70,27 +70,25 @@ $maxWidth: 600px; // Sync with BackgroundPicker.js
   z-index: -1;
 
   & + label {
-    // TODO: de-dup with button
     cursor: pointer;
     display: inline-block;
-    font-weight: bold;
-    letter-spacing: 1px;
-    padding: $gutterSm $gutterMd;
-    text-transform: uppercase;
-    transition: color $transition, background $transition;
+    margin-bottom: $gutterMd;
+  }
+}
 
-    border: 3px solid $colorLight;
-    background-color: $colorDark;
-    color: $colorLight;
-    &:hover,
-    &:active {
-      color: $colorAccent;
-      background: $colorLight;
-    }
+.uploadButton {
+  pointer-events: none; // Should click through to wrapper label
+  margin-bottom: 0 !important; // Margin will be on wrapper label instead
+
+  // Sync with Button.module.scss
+  .uploadInput + label:hover & {
+    color: $colorAccent;
+    background: $colorLight;
   }
 
-  &:focus + label {
-    outline: 1px dotted #000;
-    outline: -webkit-focus-ring-color auto 5px;
+  // Sync with Button.module.scss
+  .uploadInput:focus + label & {
+    outline: none;
+    border-color: $colorAccent;
   }
 }
