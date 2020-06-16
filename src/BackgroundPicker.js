@@ -50,6 +50,7 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
   }, [photos]);
 
   const searchRequest = React.useCallback(async searchTerm => {
+    if (!searchTerm) return;
     const response = await fetch(
       `https://www.flickr.com/services/rest/` +
         `?api_key=${FLICKR_API_KEY}` +
