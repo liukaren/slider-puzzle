@@ -4,6 +4,10 @@ import BackgroundPicker from './BackgroundPicker';
 import Button from './Button';
 import GF from './Giphy';
 import { useViewport } from './util';
+import { ReactComponent as HintOnIcon } from './images/lightbulb-fill.svg';
+import { ReactComponent as HintOffIcon } from './images/lightbulb-outline.svg';
+import { ReactComponent as SoundOnIcon } from './images/volume-up.svg';
+import { ReactComponent as SoundOffIcon } from './images/volume-mute.svg';
 import styles from './Board.module.scss';
 import {
   swapTiles,
@@ -38,7 +42,10 @@ export default function Board() {
   // https://reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function
 
   const [isSolving, setSolving] = React.useState(false); // For proper text on button
-  const isSolvingRef = React.useRef(false); // For whether or not to actually run solution
+  const isSolvingRef = React.useRef(isSolving); // For whether or not to actually run solution
+
+  const [enableSound, setEnableSound] = React.useState(true);
+  const enableSoundRef = React.useRef(enableSound);
 
   const boardRef = React.useRef(board);
   boardRef.current = board;
@@ -72,10 +79,12 @@ export default function Board() {
       setAnimation({ animation, row, col });
 
       // Play sound (after small delay)
-      setTimeout(() => {
-        sound.currentTime = 0;
-        sound.play();
-      }, AUDIO_DELAY_MS);
+      if (enableSoundRef.current) {
+        setTimeout(() => {
+          sound.currentTime = 0;
+          sound.play();
+        }, AUDIO_DELAY_MS);
+      }
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -100,7 +109,7 @@ export default function Board() {
         }, ANIMATION_MS);
       });
     },
-    [boardRef, sound]
+    [boardRef, sound, enableSoundRef]
   );
 
   const onClickTile = React.useCallback(
@@ -300,7 +309,36 @@ export default function Board() {
             <Button
               className={cn(styles.control, styles.setting)}
               onClick={() => setShowNumbers(!showNumbers)}>
-              {showNumbers ? 'Labels' : <s>Labels</s>}
+              {showNumbers ? (
+                <HintOnIcon
+                  alt="Toggle labels"
+                  className={styles.settingIcon}
+                />
+              ) : (
+                <HintOffIcon
+                  alt="Toggle labels"
+                  className={styles.settingIcon}
+                />
+              )}
+              {/* {showNumbers ? 'Labels' : <s>Labels</s>} */}
+            </Button>
+            <Button
+              className={cn(styles.control, styles.setting)}
+              onClick={() => {
+                enableSoundRef.current = !enableSound;
+                setEnableSound(!enableSound);
+              }}>
+              {enableSound ? (
+                <SoundOnIcon
+                  alt="Toggle sound"
+                  className={styles.settingIcon}
+                />
+              ) : (
+                <SoundOffIcon
+                  alt="Toggle sound"
+                  className={styles.settingIcon}
+                />
+              )}
             </Button>
           </div>
         </div>
