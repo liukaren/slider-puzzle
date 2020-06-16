@@ -6,6 +6,8 @@ import GF from './Giphy';
 import { useViewport } from './util';
 import { ReactComponent as HintOnIcon } from './images/lightbulb-fill.svg';
 import { ReactComponent as HintOffIcon } from './images/lightbulb-outline.svg';
+import { ReactComponent as SizeUpIcon } from './images/expand.svg';
+import { ReactComponent as SizeDownIcon } from './images/collapse.svg';
 import { ReactComponent as SoundOnIcon } from './images/volume-up.svg';
 import { ReactComponent as SoundOffIcon } from './images/volume-mute.svg';
 import styles from './Board.module.scss';
@@ -22,8 +24,12 @@ const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 const MAX_TILE_PX = 100;
 const GUTTER_MD_PX = 16;
 
+const MIN_DIMENSION = 3;
+const MAX_DIMENSION = 5;
+const DEFAULT_DIMENSION = 4;
+
 export default function Board() {
-  const [dimension, setDimension] = React.useState(4);
+  const [dimension, setDimension] = React.useState(DEFAULT_DIMENSION);
   const [showNumbers, setShowNumbers] = React.useState(true);
 
   let [board, setBoard] = React.useState({
@@ -278,7 +284,7 @@ export default function Board() {
             </Button>
             <Button
               className={cn(styles.control, styles.main, {
-                [styles.stop]: isSolving
+                [styles.warning]: isSolving
               })}
               onClick={isSolving ? onClickStop : onClickSolve}
               type="button">
@@ -295,49 +301,41 @@ export default function Board() {
           <div className={styles.controlHeader}>Settings</div>
           <div className={styles.controlGroup}>
             <Button
-              className={cn(styles.control, styles.setting, styles.size)}
-              disabled={dimension === 3 || isSolving}
-              onClick={() => setDimension(dimension - 1)}>
-              -
-            </Button>
-            <Button
-              className={cn(styles.control, styles.setting, styles.size)}
-              disabled={dimension === 5 || isSolving}
-              onClick={() => setDimension(dimension + 1)}>
-              +
-            </Button>
-            <Button
               className={cn(styles.control, styles.setting)}
+              disabled={isSolving}
+              onClick={() => {
+                if (dimension >= MAX_DIMENSION) setDimension(MIN_DIMENSION);
+                else setDimension(dimension + 1);
+              }}>
+              {dimension >= MAX_DIMENSION ? (
+                <SizeDownIcon alt="Toggle size" />
+              ) : (
+                <SizeUpIcon alt="Toggle size" />
+              )}
+            </Button>
+            <Button
+              className={cn(styles.control, styles.setting, {
+                [styles.warning]: !showNumbers
+              })}
               onClick={() => setShowNumbers(!showNumbers)}>
               {showNumbers ? (
-                <HintOnIcon
-                  alt="Toggle labels"
-                  className={styles.settingIcon}
-                />
+                <HintOnIcon alt="Toggle labels" />
               ) : (
-                <HintOffIcon
-                  alt="Toggle labels"
-                  className={styles.settingIcon}
-                />
+                <HintOffIcon alt="Toggle labels" />
               )}
-              {/* {showNumbers ? 'Labels' : <s>Labels</s>} */}
             </Button>
             <Button
-              className={cn(styles.control, styles.setting)}
+              className={cn(styles.control, styles.setting, {
+                [styles.warning]: !enableSound
+              })}
               onClick={() => {
                 enableSoundRef.current = !enableSound;
                 setEnableSound(!enableSound);
               }}>
               {enableSound ? (
-                <SoundOnIcon
-                  alt="Toggle sound"
-                  className={styles.settingIcon}
-                />
+                <SoundOnIcon alt="Toggle sound" />
               ) : (
-                <SoundOffIcon
-                  alt="Toggle sound"
-                  className={styles.settingIcon}
-                />
+                <SoundOffIcon alt="Toggle sound" />
               )}
             </Button>
           </div>

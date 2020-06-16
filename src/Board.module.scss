@@ -98,28 +98,20 @@
     height: 100px;
     font-size: $fontSizeLg;
   }
-  &.stop {
+  &.warning {
     background-color: $colorWarning;
   }
   &.setting {
-    font-size: $fontSizeSm;
-  }
-  &.size {
-    font-size: $fontSizeSm;
-    padding: 0;
-    width: 40px;
-    height: 40px;
-    &:first-of-type {
-      margin-right: 0;
-      border-right: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
     }
   }
   font-size: $fontSizeMd;
   margin-bottom: $gutterMd;
   @include marginRightUnlessLast($gutterMd);
-}
-
-.settingIcon {
-  width: 32px;
-  height: 32px;
 }
