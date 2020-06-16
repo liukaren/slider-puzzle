@@ -2,13 +2,14 @@
 
 .app {
   text-align: center;
-  background-color: $color1;
-  min-height: calc(100vh - #{$gutterMd * 2});
+  background-color: $colorBackground;
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: $gutterLg;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: $gutterMd;
 }
 
 .controls {

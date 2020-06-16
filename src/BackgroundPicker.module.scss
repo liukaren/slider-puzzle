@@ -27,10 +27,6 @@ $imgSize: 150px;
   vertical-align: middle;
 }
 
-.button {
-  @include marginRightUnlessLast($gutterMd);
-}
-
 .uploadInput {
   // https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
   width: 0.1px;
@@ -41,21 +37,22 @@ $imgSize: 150px;
   z-index: -1;
 
   & + label {
+    // TODO: de-dup with button
     cursor: pointer;
     display: inline-block;
-    font-size: $fontSizeMd;
     font-weight: bold;
     letter-spacing: 1px;
     padding: $gutterSm $gutterMd;
     text-transform: uppercase;
     transition: color $transition, background $transition;
 
-    border: 3px solid $color3;
-    color: $color3;
+    border: 3px solid $colorLight;
+    background-color: $colorDark;
+    color: $colorLight;
     &:hover,
     &:active {
-      color: $color2;
-      background: $color3;
+      color: $colorAccent;
+      background: $colorLight;
     }
   }
 

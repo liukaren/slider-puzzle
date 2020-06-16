@@ -1,8 +1,34 @@
 @import 'constants.scss';
 
+.title {
+  border-top: 1px solid $colorLight;
+  border-bottom: 1px solid $colorLight;
+  color: $colorLight;
+  font-size: $fontSizeXl;
+  letter-spacing: 1px;
+  margin: 0 0 $gutterLg;
+  padding: $gutterSm;
+  text-transform: uppercase;
+}
+
 .wrapper {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.board {
+  margin-bottom: $gutterMd;
+
+  // Prevents jumping when toggling board dimensions
+  min-width: $tileSize * 4 + $gutterMd * 2;
+  min-height: $tileSize * 4 + $gutterMd * 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .row {
@@ -18,7 +44,7 @@
 
   border: 1px solid transparent; // For consistent sizing
   &.nonEmpty {
-    border: 1px solid $color3;
+    border: 1px solid $colorLight;
     cursor: pointer;
 
     position: relative;
@@ -34,7 +60,7 @@
 
   @include centerChildren();
   & > .number {
-    color: $color3;
+    color: $colorLight;
     font-size: 40px;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -63,9 +89,9 @@
 
 .controlHeader {
   display: inline-block;
-  color: $color3;
-  border-top: 1px solid $color3;
-  border-bottom: 1px solid $color3;
+  color: $colorLight;
+  border-top: 1px solid $colorLight;
+  border-bottom: 1px solid $colorLight;
   font-size: $fontSizeSm;
   font-weight: bold;
   letter-spacing: 1px;
@@ -74,15 +100,28 @@
   text-transform: uppercase;
 }
 
-.controlGroup {
-  @include marginBottomUnlessLast($gutterMd);
-}
-
 .control {
   &.main {
-    width: 180px;
     height: 100px;
     font-size: $fontSizeLg;
   }
+  &.stop {
+    background-color: $colorWarning;
+  }
+  &.setting {
+    font-size: $fontSizeSm;
+  }
+  &.size {
+    font-size: $fontSizeSm;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    &:first-of-type {
+      margin-right: 0;
+      border-right: 0;
+    }
+  }
+  font-size: $fontSizeMd;
+  margin-bottom: $gutterMd;
   @include marginRightUnlessLast($gutterMd);
 }

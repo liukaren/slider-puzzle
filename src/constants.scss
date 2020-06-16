@@ -1,12 +1,13 @@
-$color1: #1a535c;
-$color2: #4ecdc4;
-$color3: #f7fff7;
-$color4: #ff6b6b;
-$color5: #ffe66d;
+$colorDark: #4f5d75;
+$colorLight: #ffffff;
+$colorWarning: #ab3428;
+$colorAccent: #ef8354;
+$colorBackground: #2d3142;
 
-$fontSizeSm: 18px;
-$fontSizeMd: 24px;
+$fontSizeSm: 16px;
+$fontSizeMd: 20px;
 $fontSizeLg: 28px;
+$fontSizeXl: 36px;
 
 $tileSize: 100px; // Sync with constant in Board.js
 $numberSize: 50px;
@@ -14,6 +15,7 @@ $transition: 250ms;
 
 $gutterSm: 8px;
 $gutterMd: 16px;
+$gutterLg: 24px;
 
 $zIndexModal: 10;
 

@@ -212,93 +212,100 @@ export default function Board() {
   }, [background, dimension]);
 
   return (
-    <div className={styles.wrapper}>
-      <div>
-        {board.tiles.map((rowValues, row) => (
-          <div className={styles.row} key={row}>
-            {rowValues.map((tile, col) => {
-              const goal = getGoalPosition(tile, dimension);
+    <>
+      <h1 className={styles.title}>15-puzzle solver</h1>
+      <div className={styles.wrapper}>
+        <div className={styles.board}>
+          {board.tiles.map((rowValues, row) => (
+            <div className={styles.row} key={row}>
+              {rowValues.map((tile, col) => {
+                const goal = getGoalPosition(tile, dimension);
 
-              // Use goal position to calculate background
-              const backgroundPositionX = Math.ceil(
-                goal.col * -TILE_SIZE - horizontalOffset
-              );
-              const backgroundPositionY = Math.ceil(
-                goal.row * -TILE_SIZE - verticalOffset
-              );
+                // Use goal position to calculate background
+                const backgroundPositionX = Math.ceil(
+                  goal.col * -TILE_SIZE - horizontalOffset
+                );
+                const backgroundPositionY = Math.ceil(
+                  goal.row * -TILE_SIZE - verticalOffset
+                );
 
-              return (
-                <div
-                  className={cn([
-                    styles.tile,
-                    {
-                      [styles.nonEmpty]: tile !== 0,
-                      [animation.animation]:
-                        animation.row === row && animation.col === col
-                    }
-                  ])}
-                  key={col}
-                  onClick={() => onClickTile(row, col)}
-                  style={
-                    tile !== 0
-                      ? {
-                          backgroundImage: `url("${background.url}")`,
-                          backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
-                          backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`
-                        }
-                      : undefined
-                  }>
-                  {tile !== 0 && showNumbers && (
-                    <div className={styles.number}>{tile}</div>
-                  )}
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    className={cn([
+                      styles.tile,
+                      {
+                        [styles.nonEmpty]: tile !== 0,
+                        [animation.animation]:
+                          animation.row === row && animation.col === col
+                      }
+                    ])}
+                    key={col}
+                    onClick={() => onClickTile(row, col)}
+                    style={
+                      tile !== 0
+                        ? {
+                            backgroundImage: `url("${background.url}")`,
+                            backgroundSize: `${backgroundWidth}% ${backgroundHeight}%`,
+                            backgroundPosition: `${backgroundPositionX}px ${backgroundPositionY}px`
+                          }
+                        : undefined
+                    }>
+                    {tile !== 0 && showNumbers && (
+                      <div className={styles.number}>{tile}</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className={styles.controls}>
+          <div className={styles.controlGroup}>
+            <Button
+              className={cn(styles.control, styles.main)}
+              disabled={isSolving}
+              onClick={onClickShuffle}
+              type="button">
+              Shuffle
+            </Button>
+            <Button
+              className={cn(styles.control, styles.main, {
+                [styles.stop]: isSolving
+              })}
+              onClick={isSolving ? onClickStop : onClickSolve}
+              type="button">
+              {isSolving ? 'Stop' : 'Solve'}
+            </Button>
           </div>
-        ))}
-      </div>
-      <div className={styles.controls}>
-        <div className={styles.controlHeader}>Settings</div>
-        <div className={styles.controlGroup}>
-          <Button
-            className={styles.control}
-            disabled={dimension === 3 || isSolving}
-            onClick={() => setDimension(dimension - 1)}>
-            -
-          </Button>
-          <Button
-            className={styles.control}
-            disabled={dimension === 5 || isSolving}
-            onClick={() => setDimension(dimension + 1)}>
-            +
-          </Button>
-          <Button
-            className={styles.control}
-            onClick={() => setShowNumbers(!showNumbers)}>
-            {showNumbers ? 'Labels' : <s>Labels</s>}
-          </Button>
-        </div>
-        <div className={styles.controlHeader}>Gameplay</div>
-        <div className={styles.controlGroup}>
-          <Button
-            className={cn(styles.control, styles.main)}
-            disabled={isSolving}
-            onClick={onClickShuffle}
-            type="button">
-            Shuffle
-          </Button>
-          <Button
-            className={cn(styles.control, styles.main)}
-            onClick={isSolving ? onClickStop : onClickSolve}
-            type="button">
-            {isSolving ? 'Stop' : 'Solve'}
-          </Button>
-        </div>
-        <div className={styles.controlHeader}>Set background</div>
-        <div className={styles.controlGroup}>
-          <BackgroundPicker setBackground={setBackground} />
+          <div className={styles.controlHeader}>Choose background</div>
+          <div className={styles.controlGroup}>
+            <BackgroundPicker
+              buttonClassName={styles.control}
+              setBackground={setBackground}
+            />
+          </div>
+          <div className={styles.controlHeader}>Settings</div>
+          <div className={styles.controlGroup}>
+            <Button
+              className={cn(styles.control, styles.setting, styles.size)}
+              disabled={dimension === 3 || isSolving}
+              onClick={() => setDimension(dimension - 1)}>
+              -
+            </Button>
+            <Button
+              className={cn(styles.control, styles.setting, styles.size)}
+              disabled={dimension === 5 || isSolving}
+              onClick={() => setDimension(dimension + 1)}>
+              +
+            </Button>
+            <Button
+              className={cn(styles.control, styles.setting)}
+              onClick={() => setShowNumbers(!showNumbers)}>
+              {showNumbers ? 'Labels' : <s>Labels</s>}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -3,19 +3,19 @@
 // https://tympanus.net/codrops/2013/06/13/creative-button-styles/
 .button {
   background: none;
-  font-size: $fontSizeMd;
   font-weight: bold;
   letter-spacing: 1px;
   padding: $gutterSm $gutterMd;
   text-transform: uppercase;
   transition: color $transition, background $transition;
 
-  border: 3px solid $color3;
-  color: $color3;
+  border: 3px solid $colorLight;
+  background-color: $colorDark;
+  color: $colorLight;
   &:hover:not(:disabled),
   &:active {
-    color: $color2;
-    background: $color3;
+    color: $colorAccent;
+    background: $colorLight;
   }
   &:disabled {
     border-color: grey;
@@ -23,7 +23,7 @@
   }
   &:focus {
     outline: none;
-    border-color: $color5;
+    border-color: $colorAccent;
   }
 
   &:not(:disabled) {

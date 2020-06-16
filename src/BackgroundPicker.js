@@ -154,7 +154,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
   );
 }
 
-export default function ({ setBackground }) {
+export default function ({ setBackground, buttonClassName }) {
   const [showGiphy, setShowGiphy] = React.useState(false);
   const [showFlickr, setShowFlickr] = React.useState(false);
   const imageUpload = React.useRef();
@@ -185,12 +185,12 @@ export default function ({ setBackground }) {
   return (
     <>
       <Button
-        className={styles.button}
+        className={buttonClassName}
         onClick={() => setShowGiphy(!showGiphy)}>
         Giphy
       </Button>
       <Button
-        className={styles.button}
+        className={buttonClassName}
         onClick={() => setShowFlickr(!showFlickr)}>
         Flickr
       </Button>
@@ -214,8 +214,10 @@ export default function ({ setBackground }) {
         ref={imageUpload}
         onChange={onUpload}
       />
-      <label className={styles.uploadLabel} htmlFor="image-bg">
-        Choose file
+      <label
+        className={cn(styles.uploadLabel, buttonClassName)}
+        htmlFor="image-bg">
+        Upload
       </label>
     </>
   );
