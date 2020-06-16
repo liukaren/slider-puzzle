@@ -43,16 +43,61 @@ export function shuffleBoard(board) {
   return board;
 }
 
-export function countInversions(array) {
+// Merge and count inversions
+function merge(array, tempArray, left, mid, right) {
   let inversions = 0;
-  // TODO: Replace naive count inversions
-  for (let i = 0; i < array.length; i++) {
-    for (let j = i + 1; j < array.length; j++) {
-      // Ignore the blank/0 tile
-      if (array[i] !== 0 && array[j] !== 0 && array[i] > array[j]) inversions++;
+  let i = left;
+  let j = mid + 1;
+  let k = left; // tempArray index
+
+  while (i <= mid && j <= right) {
+    if (array[i] <= array[j]) {
+      tempArray[k] = array[i];
+      k++;
+      i++;
+    } else {
+      tempArray[k] = array[j];
+      // Ignore blank space when counting inversions
+      if (array[j] !== 0) inversions += mid - i + 1;
+      k++;
+      j++;
     }
   }
+
+  while (i <= mid) {
+    tempArray[k] = array[i];
+    k++;
+    i++;
+  }
+  while (j <= right) {
+    tempArray[k] = array[j];
+    k++;
+    j++;
+  }
+
+  for (let x = left; x <= right; x++) {
+    array[x] = tempArray[x];
+  }
+
   return inversions;
+}
+
+// Mergesort and count inversions
+function mergeSort(array, tempArray, left, right) {
+  let inversions = 0;
+
+  if (left < right) {
+    const mid = Math.floor((left + right) / 2);
+    inversions += mergeSort(array, tempArray, left, mid);
+    inversions += mergeSort(array, tempArray, mid + 1, right);
+    inversions += merge(array, tempArray, left, mid, right);
+  }
+
+  return inversions;
+}
+
+export function countInversions(array) {
+  return mergeSort(array, [], 0, array.length - 1);
 }
 
 // https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
@@ -83,16 +128,7 @@ export function generateSolved(dimension) {
 }
 
 export function isGoal(board) {
-  const dim = board.length;
-  for (let row = 0; row < dim; row++) {
-    for (let col = 0; col < dim; col++) {
-      let tile = board[row][col];
-      if (row === dim - 1 && col === dim - 1) {
-        if (tile !== 0) return false;
-      } else if (tile !== row * dim + col + 1) return false;
-    }
-  }
-  return true;
+  return manhattan(board) === 0;
 }
 
 export function getGoalPosition(tile, dimension) {
@@ -102,7 +138,7 @@ export function getGoalPosition(tile, dimension) {
   };
 }
 
-// Returns the "manhattan" or "taxicab" distance of this board from the goal board
+// Returns distance from the goal board
 export function manhattan(board) {
   const dim = board.length;
   let distance = 0;
@@ -170,9 +206,9 @@ export function deepEqual(board1, board2) {
 }
 
 function createNeighbor(board, blankRow, blankCol, neighborRow, neighborCol) {
-  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol);
-  const neighbor = JSON.parse(JSON.stringify(board));
-  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol); // Swap back
+  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol); // Swap two tiles
+  const neighbor = JSON.parse(JSON.stringify(board)); // Copy the board
+  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol); // Swap tiles back
   return neighbor;
 }
 
@@ -267,7 +303,6 @@ export function solve(board, blankRow, blankCol) {
   const solution = [];
   while (searchNode !== null) {
     solution.push({
-      board: searchNode.board,
       blankRow: searchNode.blankRow,
       blankCol: searchNode.blankCol
     });
