@@ -4,6 +4,8 @@ import BackgroundPicker from './BackgroundPicker';
 import Button from './Button';
 import GF from './Giphy';
 import { useViewport } from './util';
+import { ReactComponent as QuestionIcon } from './images/question.svg';
+import { ReactComponent as GithubIcon } from './images/github.svg';
 import { ReactComponent as HintOnIcon } from './images/lightbulb-fill.svg';
 import { ReactComponent as HintOffIcon } from './images/lightbulb-outline.svg';
 import { ReactComponent as SizeUpIcon } from './images/expand.svg';
@@ -274,7 +276,7 @@ export default function Board() {
           ))}
         </div>
         <div className={styles.controls}>
-          <div className={styles.controlGroup}>
+          <div>
             <Button
               className={cn(styles.control, styles.main)}
               disabled={isSolving}
@@ -292,14 +294,14 @@ export default function Board() {
             </Button>
           </div>
           <div className={styles.controlHeader}>Choose background</div>
-          <div className={styles.controlGroup}>
+          <div>
             <BackgroundPicker
               buttonClassName={styles.control}
               setBackground={setBackground}
             />
           </div>
           <div className={styles.controlHeader}>Settings</div>
-          <div className={styles.controlGroup}>
+          <div>
             <Button
               className={cn(styles.control, styles.setting)}
               disabled={isSolving}
@@ -338,6 +340,16 @@ export default function Board() {
                 <SoundOffIcon alt="Toggle sound" />
               )}
             </Button>
+          </div>
+          <div className={styles.footer}>
+            <a href="https://github.com/liukaren/slider-puzzle#15-puzzle-solver">
+              <GithubIcon />
+              Github
+            </a>
+            <a href="http://liukaren.github.io">
+              <QuestionIcon />
+              Karen
+            </a>
           </div>
         </div>
       </div>

@@ -115,3 +115,24 @@
   margin-bottom: $gutterMd;
   @include marginRightUnlessLast($gutterMd);
 }
+
+.footer {
+  color: white;
+  font-size: $fontSizeXs;
+  svg {
+    margin-right: 4px;
+    width: $fontSizeXs;
+    height: $fontSizeXs;
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $colorContrast;
+    text-decoration: none;
+    @include marginRightUnlessLast($gutterMd);
+  }
+  a:hover {
+    color: $colorSecondary;
+  }
+}
