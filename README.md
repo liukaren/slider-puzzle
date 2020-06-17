@@ -6,6 +6,7 @@ Modeled after the 8-puzzle solver from the free Princeton [Algorithms Part 1](ht
 - Uses the [Giphy SDK](https://developers.giphy.com/docs/sdk/#web)
 - Uses the [Flickr API](https://www.flickr.com/services/api/)
 - Icons from [Font Awesome](https://fontawesome.com/license)
+- Sound effect from [Open Game Art](https://opengameart.org/content/87-clickety-clips)
 
 ### Development
 

@@ -22,7 +22,6 @@ import {
 } from './BoardUtil';
 
 const ANIMATION_MS = 250;
-const AUDIO_DELAY_MS = ANIMATION_MS / 2;
 const MAX_TILE_PX = 100;
 const GUTTER_MD_PX = 16;
 
@@ -86,12 +85,10 @@ export default function Board() {
       // Play animation
       setAnimation({ animation, row, col });
 
-      // Play sound (after small delay)
-      if (enableSoundRef.current) {
-        setTimeout(() => {
-          sound.currentTime = 0;
-          sound.play();
-        }, AUDIO_DELAY_MS);
+      // Play sound (unless playing automated solution)
+      if (enableSoundRef.current && !isSolvingRef.current) {
+        sound.currentTime = 0;
+        sound.play();
       }
 
       return new Promise(resolve => {
