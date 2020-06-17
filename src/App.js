@@ -6,6 +6,7 @@ export default function App() {
   return (
     <div className={styles.app}>
       <Board />
+      <div id="modal-root"></div>
     </div>
   );
 }
