@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6e27e2c6b23c647767e72643ae24f4aa",
+    "revision": "56a8171c6b4addc92325d2312067a797",
     "url": "/slider-puzzle/index.html"
   },
   {
-    "revision": "0453605d8b4a1778fd12",
-    "url": "/slider-puzzle/static/css/main.f30f56f6.chunk.css"
+    "revision": "dcd6c83a65d13a89e8d3",
+    "url": "/slider-puzzle/static/css/main.cd8778aa.chunk.css"
   },
   {
-    "revision": "ef45a7b8f1a758db013e",
-    "url": "/slider-puzzle/static/js/2.7384d79c.chunk.js"
+    "revision": "307fac7b31508dbfc577",
+    "url": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js"
   },
   {
     "revision": "554c5117578f42ee6eb4f89c6db2e154",
-    "url": "/slider-puzzle/static/js/2.7384d79c.chunk.js.LICENSE.txt"
+    "url": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0453605d8b4a1778fd12",
-    "url": "/slider-puzzle/static/js/main.7dc36daa.chunk.js"
+    "revision": "dcd6c83a65d13a89e8d3",
+    "url": "/slider-puzzle/static/js/main.da8b0f4e.chunk.js"
   },
   {
     "revision": "0f786b75fc1f6689b02e",
