@@ -7,13 +7,12 @@ import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
 import { ReactComponent as CloseIcon } from './images/times.svg';
-import { useViewport } from './util';
+import { useViewport, GUTTER_LG_PX } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const DEBOUNCE_MS = 500;
 const MAX_WIDTH_PX = 600;
 const HEIGHT_PX = 600;
-const GUTTER_LG_PX = 32;
 const FETCH_LIMIT = 21;
 
 function FlickrBackgroundPicker({ setBackground, onClose }) {
@@ -33,6 +32,7 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
     [setBackground, onClose]
   );
 
+  // Initialize with "interesting" photos
   React.useEffect(() => {
     setLoading(true);
     flickrApiCall('flickr.interestingness.getList', {
@@ -76,7 +76,7 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
     <Modal onClose={onClose}>
       <div
         className={styles.modal}
-        style={{ width: modalWidth, maxHeight: modalHeight }}>
+        style={{ width: modalWidth, height: modalHeight }}>
         <div className={styles.header}>
           <SearchInput onChange={onInputChange} className={styles.search} />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />
@@ -121,6 +121,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
 
   const fetchGifs = React.useCallback(
     offset => {
+      // Initialize with "trending" gifs
       if (!search) return GF.trending({ offset, limit: FETCH_LIMIT });
       return GF.search(search, { sort: 'relevant', limit: FETCH_LIMIT });
     },
@@ -155,13 +156,16 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
   );
 
   const windowWidth = useViewport().width;
+  const modalWidth = Math.min(MAX_WIDTH_PX, windowWidth);
   const gridWidth = Math.min(MAX_WIDTH_PX, windowWidth) - GUTTER_LG_PX * 2;
   // If the modal fills the width, then also fill the height
   const modalHeight = windowWidth > MAX_WIDTH_PX ? HEIGHT_PX : '100vh';
 
   return (
     <Modal onClose={onClose}>
-      <div className={styles.modal} style={{ maxHeight: modalHeight }}>
+      <div
+        className={styles.modal}
+        style={{ width: modalWidth, height: modalHeight }}>
         <div className={styles.header}>
           <SearchInput onChange={onInputChange} className={styles.search} />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />

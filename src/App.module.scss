@@ -6,26 +6,7 @@
   box-sizing: border-box;
   min-height: 100vh;
   padding: $gutterLg;
-  display: flex;
+
+  @include centerChildren();
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-
-  margin-bottom: $gutterMd;
-  text-align: right;
-
-  & > .control {
-    width: 60px;
-    height: 60px;
-    padding: 0;
-  }
-}
-
-.numbersControl {
-  margin-left: $gutterMd;
 }

@@ -1,30 +1,30 @@
 @import 'constants.scss';
 
-.title {
-  border-top: 1px solid $colorContrast;
+$breakPoint: 800px;
+
+.title,
+.controlHeader {
   border-bottom: 1px solid $colorContrast;
+  border-top: 1px solid $colorContrast;
   color: $colorContrast;
-  font-size: $fontSizeXl;
+  font-weight: bold;
   letter-spacing: 1px;
-  margin: 0 0 $gutterLg;
   padding: $gutterSm;
   text-transform: uppercase;
 }
 
+.title {
+  font-size: $fontSizeXl;
+  margin: 0 0 $gutterLg;
+}
+
 .wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
+  @include centerChildren();
+  flex-wrap: wrap; // On small screens, buttons go under the board
 }
 
 .board {
   margin-bottom: $gutterLg;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .row {
@@ -39,85 +39,62 @@
   &.nonEmpty {
     border: 1px solid $colorContrast;
     cursor: pointer;
-
-    position: relative;
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
   }
 
   @include centerChildren();
   & > .number {
     color: $colorContrast;
-    font-size: 40px;
+    font-size: $fontSizeXl;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   }
 
+  transition: transform $transition;
   &.slideUp {
-    transition: transform $transition;
     transform: translateY(-100%);
   }
   &.slideDown {
-    transition: transform $transition;
     transform: translateY(100%);
   }
   &.slideLeft {
-    transition: transform $transition;
     transform: translateX(-100%);
   }
   &.slideRight {
-    transition: transform $transition;
     transform: translateX(100%);
   }
 }
 
-.controls {
-  margin-left: $gutterMd;
+@media (min-width: $breakPoint) {
+  .controls {
+    margin-left: $gutterLg;
+  }
 }
 
 .controlHeader {
   display: inline-block;
-  color: $colorContrast;
-  border-top: 1px solid $colorContrast;
-  border-bottom: 1px solid $colorContrast;
   font-size: $fontSizeSm;
-  font-weight: bold;
-  letter-spacing: 1px;
   margin-bottom: $gutterMd;
-  padding: $gutterSm;
-  text-transform: uppercase;
 }
 
 .control {
+  font-size: $fontSizeMd;
+  margin-bottom: $gutterMd;
+  @include marginRightUnlessLast($gutterMd);
   &.main {
     height: 100px;
+    width: 180px;
     font-size: $fontSizeLg;
   }
   &.warning {
     background-color: $colorWarning;
   }
-  &.setting {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    svg {
-      width: 32px;
-      height: 32px;
-    }
+  &.setting svg {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
   }
-  font-size: $fontSizeMd;
-  margin-bottom: $gutterMd;
-  @include marginRightUnlessLast($gutterMd);
 }
 
 .footer {
-  color: white;
   font-size: $fontSizeXs;
   svg {
     margin-right: 4px;

@@ -12,6 +12,7 @@ import { ReactComponent as SizeUpIcon } from './images/expand.svg';
 import { ReactComponent as SizeDownIcon } from './images/collapse.svg';
 import { ReactComponent as SoundOnIcon } from './images/volume-up.svg';
 import { ReactComponent as SoundOffIcon } from './images/volume-mute.svg';
+import { GUTTER_MD_PX } from './util';
 import styles from './Board.module.scss';
 import {
   swapTiles,
@@ -23,8 +24,6 @@ import {
 
 const ANIMATION_MS = 250;
 const MAX_TILE_PX = 100;
-const GUTTER_MD_PX = 16;
-
 const MIN_DIMENSION = 3;
 const MAX_DIMENSION = 4;
 const DEFAULT_DIMENSION = 4;
@@ -32,13 +31,9 @@ const DEFAULT_DIMENSION = 4;
 export default function Board() {
   const [dimension, setDimension] = React.useState(DEFAULT_DIMENSION);
   const [showNumbers, setShowNumbers] = React.useState(true);
+  const [background, setBackground] = React.useState(null);
 
-  let [board, setBoard] = React.useState({
-    tiles: generateSolved(dimension),
-    blankRow: dimension - 1,
-    blankCol: dimension - 1
-  });
-
+  let [board, setBoard] = React.useState(generateSolved(dimension));
   let [animation, setAnimation] = React.useState({
     animation: null,
     row: null,
@@ -58,14 +53,7 @@ export default function Board() {
   boardRef.current = board;
 
   // Re-generate board when dimension changes
-  React.useEffect(() => {
-    // TODO: Ask to confirm if modifying from non-goal board
-    setBoard({
-      tiles: generateSolved(dimension),
-      blankRow: dimension - 1,
-      blankCol: dimension - 1
-    });
-  }, [dimension]);
+  React.useEffect(() => setBoard(generateSolved(dimension)), [dimension]);
 
   // Select a random background from Giphy on load
   React.useEffect(() => {
@@ -74,14 +62,20 @@ export default function Board() {
     });
   }, []);
 
-  const [background, setBackground] = React.useState(null);
-
   const sound = React.useMemo(() => {
     return document.getElementById('sound-tile');
   }, []);
 
   const moveTile = React.useCallback(
-    (row, col, animation) => {
+    (row, col) => {
+      const { blankRow, blankCol } = boardRef.current;
+
+      let animation;
+      if (row - 1 === blankRow) animation = styles.slideUp;
+      else if (row + 1 === blankRow) animation = styles.slideDown;
+      else if (col - 1 === blankCol) animation = styles.slideLeft;
+      else animation = styles.slideRight;
+
       // Play animation
       setAnimation({ animation, row, col });
 
@@ -91,6 +85,7 @@ export default function Board() {
         sound.play();
       }
 
+      // After ANIMATION_MS elapsed, clean up
       return new Promise(resolve => {
         setTimeout(() => {
           // Stop animation
@@ -120,39 +115,22 @@ export default function Board() {
   const onClickTile = React.useCallback(
     (row, col) => {
       // Ignore clicks while an animation or a solution is playing
-      if (animation.animation || isSolving) return Promise.resolve();
+      if (animation.animation || isSolvingRef.current) return Promise.resolve();
 
+      // Ignore clicks on tiles not next to the blank tile
       const { blankRow, blankCol } = boardRef.current;
-      if (row - 1 === blankRow && col === blankCol) {
-        return moveTile(row, col, styles.slideUp);
-      } else if (row + 1 === blankRow && col === blankCol) {
-        return moveTile(row, col, styles.slideDown);
-      } else if (row === blankRow && col - 1 === blankCol) {
-        return moveTile(row, col, styles.slideLeft);
-      } else if (row === blankRow && col + 1 === blankCol) {
-        return moveTile(row, col, styles.slideRight);
-      }
+      const isValidMove =
+        (blankRow === row && Math.abs(blankCol - col) === 1) ||
+        (blankCol === col && Math.abs(blankRow - row) === 1);
+      if (!isValidMove) return Promise.resolve();
 
-      // Not adjacent to blank space, do nothing
-      return Promise.resolve();
+      return moveTile(row, col);
     },
-    [isSolving, moveTile, animation, boardRef]
+    [animation, isSolvingRef, boardRef, moveTile]
   );
 
   const onClickShuffle = React.useCallback(() => {
-    const randomBoard = generateRandom(dimension);
-    for (let row = 0; row < dimension; row++) {
-      for (let col = 0; col < dimension; col++) {
-        if (randomBoard[row][col] === 0) {
-          setBoard({
-            tiles: randomBoard,
-            blankRow: row,
-            blankCol: col
-          });
-          return;
-        }
-      }
-    }
+    setBoard(generateRandom(dimension));
   }, [dimension]);
 
   const onClickStop = React.useCallback(() => {
@@ -165,15 +143,16 @@ export default function Board() {
 
     setSolving(true);
     isSolvingRef.current = true;
-    // Chain all steps of the solution into serial promises
+
+    // Chain solution steps into a series of promises executed one after the other
     solution
       .reduce(
         (promise, nextStep) =>
           promise.then(() => {
+            // Run next step of solution if "isSolving" is still true.
+            // Otherwise, abort subsequent steps.
             if (isSolvingRef.current)
-              // Run next step of solution
-              return onClickTile(nextStep.blankRow, nextStep.blankCol);
-            // Abort subsequent steps when user hits "Stop"
+              return moveTile(nextStep.blankRow, nextStep.blankCol);
             else return Promise.reject();
           }),
         Promise.resolve()
@@ -182,43 +161,41 @@ export default function Board() {
         setSolving(false);
         isSolvingRef.current = false;
       });
-  }, [isSolvingRef, onClickTile, board]);
+  }, [isSolvingRef, board, moveTile]);
 
   // Fit to smaller dimension ("cover" background style)
   const backgroundWidth = React.useMemo(() => {
-    if (!background || background.width < background.height) {
+    if (!background || background.width < background.height)
       return 100 * dimension;
-    } else {
-      return 100 * (background.width / background.height) * dimension;
-    }
+    return 100 * (background.width / background.height) * dimension;
   }, [background, dimension]);
   const backgroundHeight = React.useMemo(() => {
-    if (!background || background.height < background.width) {
+    if (!background || background.height < background.width)
       return 100 * dimension;
-    } else {
-      return 100 * (background.height / background.width) * dimension;
-    }
+    return 100 * (background.height / background.width) * dimension;
   }, [background, dimension]);
 
   const windowWidth = useViewport().width;
   const tileSize = React.useMemo(() => {
-    return Math.min(MAX_TILE_PX, (windowWidth - GUTTER_MD_PX * 2) / 5);
+    // On small screens, fill the window width minus padding on either side
+    return Math.min(
+      MAX_TILE_PX,
+      (windowWidth - GUTTER_MD_PX * 2) / MAX_DIMENSION
+    );
   }, [windowWidth]);
 
-  // Offsets to center non-square backgrounds
+  // Offsets to center non-square backgrounds. Turn the excess % into a pixel count
   const horizontalOffset = React.useMemo(() => {
     if (!background || background.height > background.width) return 0;
-    const excessRatio = background.width / background.height - 1;
-    const excessRatioLeft = excessRatio / 2;
-    const excessPixelsLeft = excessRatioLeft * dimension * tileSize;
-    return excessPixelsLeft;
+    return (
+      ((background.width / background.height - 1) / 2) * dimension * tileSize
+    );
   }, [background, dimension, tileSize]);
   const verticalOffset = React.useMemo(() => {
     if (!background || background.width > background.height) return 0;
-    const excessRatio = background.height / background.width - 1;
-    const excessRatioTop = excessRatio / 2;
-    const excessPixelsTop = excessRatioTop * dimension * tileSize;
-    return excessPixelsTop;
+    return (
+      ((background.height / background.width - 1) / 2) * dimension * tileSize
+    );
   }, [background, dimension, tileSize]);
 
   return (
@@ -226,9 +203,9 @@ export default function Board() {
       <h1 className={styles.title}>15-puzzle solver</h1>
       <div className={styles.wrapper}>
         <div className={styles.board}>
-          {board.tiles.map((rowValues, row) => (
+          {board.tiles.map((rowTiles, row) => (
             <div className={styles.row} key={row}>
-              {rowValues.map((tile, col) => {
+              {rowTiles.map((tile, col) => {
                 const goal = getGoalPosition(tile, dimension);
 
                 // Use goal position to calculate background
@@ -341,16 +318,16 @@ export default function Board() {
               )}
             </Button>
           </div>
-          <div className={styles.footer}>
+          <footer className={styles.footer}>
             <a href="https://github.com/liukaren/slider-puzzle#15-puzzle-solver">
               <GithubIcon />
               Github
             </a>
             <a href="http://liukaren.github.io">
               <QuestionIcon />
-              Karen
+              About Author
             </a>
-          </div>
+          </footer>
         </div>
       </div>
     </>

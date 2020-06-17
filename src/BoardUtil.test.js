@@ -57,18 +57,26 @@ test('countInversions - ignores zero (blank space)', () => {
 });
 
 test('generateSolved', () => {
-  expect(generateSolved(3)).toEqual([
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 0]
-  ]);
+  expect(generateSolved(3)).toEqual({
+    tiles: [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 0]
+    ],
+    blankRow: 2,
+    blankCol: 2
+  });
 
-  expect(generateSolved(4)).toEqual([
-    [1, 2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 10, 11, 12],
-    [13, 14, 15, 0]
-  ]);
+  expect(generateSolved(4)).toEqual({
+    tiles: [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [9, 10, 11, 12],
+      [13, 14, 15, 0]
+    ],
+    blankRow: 3,
+    blankCol: 3
+  });
 });
 
 test('getGoalPosition', () => {
@@ -285,7 +293,7 @@ test('neighbors - center case', () => {
     ],
     1,
     1
-  ).map(n => n.board);
+  ).map(n => n.tiles);
 
   expect(neighborList.length).toBe(4);
   expect(neighborList).toContainEqual([
@@ -319,7 +327,7 @@ test('neighbors - edge case', () => {
     ],
     2,
     1
-  ).map(n => n.board);
+  ).map(n => n.tiles);
 
   expect(neighborList.length).toBe(3);
   expect(neighborList).toContainEqual([
@@ -348,7 +356,7 @@ test('neighbors - corner case', () => {
     ],
     2,
     2
-  ).map(n => n.board);
+  ).map(n => n.tiles);
 
   expect(neighborList.length).toBe(2);
   expect(neighborList).toContainEqual([
@@ -403,5 +411,3 @@ test('solve - multiple moves', () => {
   );
   expect(solution.length).toBe(4);
 });
-
-test('solve - unsolvable', () => {});

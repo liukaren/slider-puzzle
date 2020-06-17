@@ -1,8 +1,8 @@
 import TinyQueue from 'tinyqueue';
 
-// This is a crucial improvement to put more weight on the manhattan/linear conflict
-// distance when comparing the priority of boards. The end solution may not use
-// the minimum number of moves, but it will be found more quickly.
+// This is a crucial optimization to give more priority to distance than to steps taken.
+// As a result, the solution may not take the minimum number of steps,
+// but it will be found more quickly.
 const HEURISTIC_FACTOR = 2;
 
 export function swapTiles(board, row1, col1, row2, col2) {
@@ -20,27 +20,35 @@ function findBlank(board) {
   }
 }
 
-export function shuffleBoard(board) {
-  const dimension = board.length;
+// Translates an index in a flattened array to coordinates in a 2-d array
+function indexToCoords(index, dimension) {
+  return {
+    row: Math.floor(index / dimension),
+    col: index % dimension
+  };
+}
+
+function shuffleBoard(tiles) {
+  const dimension = tiles.length;
+  const size = dimension * dimension - 1;
+
   // Fisher-Yates shuffle, adapted for a 2-d array
-  for (let i = dimension * dimension - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    const iRow = Math.floor(i / dimension);
-    const iCol = i % dimension;
-    const jRow = Math.floor(j / dimension);
-    const jCol = j % dimension;
-    swapTiles(board, iRow, iCol, jRow, jCol);
+  for (let i = size; i > 0; i--) {
+    const j = Math.floor(Math.random() * i); // Tile to swap with
+    const iCoords = indexToCoords(i, dimension);
+    const jCoords = indexToCoords(j, dimension);
+    swapTiles(tiles, iCoords.row, iCoords.col, jCoords.row, jCoords.col);
   }
 
-  const blankPos = findBlank(board);
-  if (!isSolvable(board, blankPos.row)) {
+  const blankPos = findBlank(tiles);
+  if (!isSolvable(tiles, blankPos.row)) {
     // Create one more inversion (avoid the blank tile) to make the board solvable.
-    // Probably makes the board randomness less evenly distributed, but meh.
-    if (blankPos.row === 0) swapTiles(board, 1, 0, 1, 1);
-    else swapTiles(board, 0, 0, 0, 1);
+    // Probably makes the randomness unevenly distributed, but meh.
+    if (blankPos.row === 0) swapTiles(tiles, 1, 0, 1, 1);
+    else swapTiles(tiles, 0, 0, 0, 1);
   }
 
-  return board;
+  return { tiles: tiles, blankRow: blankPos.row, blankCol: blankPos.col };
 }
 
 // Merge and count inversions
@@ -75,14 +83,13 @@ function merge(array, tempArray, left, mid, right) {
     j++;
   }
 
-  for (let x = left; x <= right; x++) {
-    array[x] = tempArray[x];
-  }
+  // Copy back into original array
+  for (let x = left; x <= right; x++) array[x] = tempArray[x];
 
   return inversions;
 }
 
-// Mergesort and count inversions
+// Mergesort to count inversions
 function mergeSort(array, tempArray, left, right) {
   let inversions = 0;
 
@@ -100,51 +107,42 @@ export function countInversions(array) {
   return mergeSort(array, [], 0, array.length - 1);
 }
 
-// https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-export function isSolvable(board, blankRow) {
-  const dimension = board.length;
-  const flattenedBoard = [].concat(...board);
+export function isSolvable(tiles, blankRow) {
+  const dimension = tiles.length;
+  const flattenedBoard = [].concat(...tiles);
   const inversions = countInversions(flattenedBoard);
-  if (dimension % 2 === 1) {
-    return inversions % 2 === 0;
-  } else {
-    if (blankRow % 2 === 0) {
-      return inversions % 2 === 1;
-    }
-    return inversions % 2 === 0;
-  }
+  if (dimension % 2 === 1) return inversions % 2 === 0;
+  else if (blankRow % 2 === 0) return inversions % 2 === 1;
+  return inversions % 2 === 0;
 }
 
 export function generateSolved(dimension) {
-  let board = new Array(dimension);
+  let tiles = [];
   for (let row = 0; row < dimension; row++) {
-    board[row] = new Array(dimension);
+    tiles[row] = [];
     for (let col = 0; col < dimension; col++) {
-      board[row][col] = row * dimension + col + 1;
+      tiles[row][col] = row * dimension + col + 1;
     }
   }
-  board[dimension - 1][dimension - 1] = 0;
-  return board;
+  tiles[dimension - 1][dimension - 1] = 0;
+  return { tiles: tiles, blankRow: dimension - 1, blankCol: dimension - 1 };
 }
 
-export function isGoal(board) {
-  return manhattan(board) === 0;
+export function isGoal(tiles) {
+  return manhattan(tiles) === 0;
 }
 
 export function getGoalPosition(tile, dimension) {
-  return {
-    row: Math.floor((tile - 1) / dimension),
-    col: (tile - 1) % dimension
-  };
+  return indexToCoords(tile - 1, dimension);
 }
 
 // Returns distance from the goal board
-export function manhattan(board) {
-  const dim = board.length;
+export function manhattan(tiles) {
+  const dim = tiles.length;
   let distance = 0;
   for (let row = 0; row < dim; row++) {
     for (let col = 0; col < dim; col++) {
-      const tile = board[row][col];
+      const tile = tiles[row][col];
       if (tile === 0) continue;
       const goal = getGoalPosition(tile, dim);
       distance += Math.abs(goal.row - row) + Math.abs(goal.col - col);
@@ -153,8 +151,8 @@ export function manhattan(board) {
   return distance;
 }
 
-export function linearConflict(board) {
-  const dim = board.length;
+export function linearConflict(tiles) {
+  const dim = tiles.length;
 
   let linearConflicts = 0;
 
@@ -162,8 +160,8 @@ export function linearConflict(board) {
   for (let row = 0; row < dim; row++) {
     for (let col1 = 0; col1 < dim; col1++) {
       for (let col2 = col1; col2 < dim; col2++) {
-        const tile1 = board[row][col1];
-        const tile2 = board[row][col2];
+        const tile1 = tiles[row][col1];
+        const tile2 = tiles[row][col2];
         if (tile1 === 0 || tile2 === 0) continue;
         const goal1 = getGoalPosition(tile1, dim);
         const goal2 = getGoalPosition(tile2, dim);
@@ -177,8 +175,8 @@ export function linearConflict(board) {
   for (let col = 0; col < dim; col++) {
     for (let row1 = 0; row1 < dim; row1++) {
       for (let row2 = row1; row2 < dim; row2++) {
-        const tile1 = board[row1][col];
-        const tile2 = board[row2][col];
+        const tile1 = tiles[row1][col];
+        const tile2 = tiles[row2][col];
         if (tile1 === 0 || tile2 === 0) continue;
         const goal1 = getGoalPosition(tile1, dim);
         const goal2 = getGoalPosition(tile2, dim);
@@ -191,65 +189,57 @@ export function linearConflict(board) {
   return linearConflicts;
 }
 
-export function heuristic(board) {
-  return manhattan(board) + 2 * linearConflict(board);
+export function heuristic(tiles) {
+  return manhattan(tiles) + 2 * linearConflict(tiles);
 }
 
-export function deepEqual(board1, board2) {
-  if (board1.length !== board2.length) return false;
-  for (let row = 0; row < board1.length; row++) {
-    for (let col = 0; col < board1.length; col++) {
-      if (board1[row][col] !== board2[row][col]) return false;
+export function deepEqual(tiles1, tiles2) {
+  if (tiles1.length !== tiles2.length) return false;
+  for (let row = 0; row < tiles1.length; row++) {
+    for (let col = 0; col < tiles1.length; col++) {
+      if (tiles1[row][col] !== tiles2[row][col]) return false;
     }
   }
   return true;
 }
 
-function createNeighbor(board, blankRow, blankCol, neighborRow, neighborCol) {
-  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol); // Swap two tiles
-  const neighbor = JSON.parse(JSON.stringify(board)); // Copy the board
-  swapTiles(board, blankRow, blankCol, neighborRow, neighborCol); // Swap tiles back
-  return neighbor;
+function createNeighbor(tiles, blankRow, blankCol, neighborRow, neighborCol) {
+  swapTiles(tiles, blankRow, blankCol, neighborRow, neighborCol); // Swap two tiles
+  const neighbor = JSON.parse(JSON.stringify(tiles)); // Copy the board
+  swapTiles(tiles, blankRow, blankCol, neighborRow, neighborCol); // Swap tiles back
+  return { tiles: neighbor, blankRow: neighborRow, blankCol: neighborCol };
 }
 
 // Boards reachable in one step. For convenience, pass in the position of the blank tile
-export function neighbors(board, blankRow, blankCol) {
+export function neighbors(tiles, blankRow, blankCol) {
   let neighbors = [];
 
   if (blankRow > 0) {
-    neighbors.push({
-      board: createNeighbor(board, blankRow, blankCol, blankRow - 1, blankCol),
-      blankRow: blankRow - 1,
-      blankCol
-    });
+    neighbors.push(
+      createNeighbor(tiles, blankRow, blankCol, blankRow - 1, blankCol)
+    );
   }
   if (blankCol > 0) {
-    neighbors.push({
-      board: createNeighbor(board, blankRow, blankCol, blankRow, blankCol - 1),
-      blankRow,
-      blankCol: blankCol - 1
-    });
+    neighbors.push(
+      createNeighbor(tiles, blankRow, blankCol, blankRow, blankCol - 1)
+    );
   }
-  if (blankRow < board.length - 1) {
-    neighbors.push({
-      board: createNeighbor(board, blankRow, blankCol, blankRow + 1, blankCol),
-      blankRow: blankRow + 1,
-      blankCol
-    });
+  if (blankRow < tiles.length - 1) {
+    neighbors.push(
+      createNeighbor(tiles, blankRow, blankCol, blankRow + 1, blankCol)
+    );
   }
-  if (blankCol < board.length - 1) {
-    neighbors.push({
-      board: createNeighbor(board, blankRow, blankCol, blankRow, blankCol + 1),
-      blankRow,
-      blankCol: blankCol + 1
-    });
+  if (blankCol < tiles.length - 1) {
+    neighbors.push(
+      createNeighbor(tiles, blankRow, blankCol, blankRow, blankCol + 1)
+    );
   }
 
   return neighbors;
 }
 
 export function generateRandom(dimension) {
-  return shuffleBoard(generateSolved(dimension));
+  return shuffleBoard(generateSolved(dimension).tiles);
 }
 
 function compare(n1, n2) {
@@ -258,22 +248,22 @@ function compare(n1, n2) {
   return priority1 - priority2;
 }
 
-export function solve(board, blankRow, blankCol) {
+export function solve(tiles, blankRow, blankCol) {
   const initial = {
-    board,
+    tiles,
     blankRow,
     blankCol,
-    heuristic: heuristic(board),
+    heuristic: heuristic(tiles),
     steps: 0,
     previous: null
   };
   const queue = new TinyQueue([initial], compare);
   let searchNode = initial;
 
-  while (!isGoal(searchNode.board)) {
+  while (!isGoal(searchNode.tiles)) {
     searchNode = queue.pop();
     const neighborList = neighbors(
-      searchNode.board,
+      searchNode.tiles,
       searchNode.blankRow,
       searchNode.blankCol
     );
@@ -283,23 +273,23 @@ export function solve(board, blankRow, blankCol) {
       // Optimization: Don't go back to the previous board, that's silly
       if (
         searchNode.previous !== null &&
-        deepEqual(nextNeighbor.board, searchNode.previous.board)
+        deepEqual(nextNeighbor.tiles, searchNode.previous.tiles)
       ) {
         continue;
       }
 
       queue.push({
-        board: nextNeighbor.board,
-        heuristic: heuristic(nextNeighbor.board),
-        steps: searchNode.steps + 1,
-        previous: searchNode,
+        tiles: nextNeighbor.tiles,
         blankRow: nextNeighbor.blankRow,
-        blankCol: nextNeighbor.blankCol
+        blankCol: nextNeighbor.blankCol,
+        heuristic: heuristic(nextNeighbor.tiles),
+        steps: searchNode.steps + 1,
+        previous: searchNode
       });
     }
   }
 
-  // Retrace steps
+  // Reached the goal, now retrace steps
   const solution = [];
   while (searchNode !== null) {
     solution.push({

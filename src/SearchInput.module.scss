@@ -1,29 +1,38 @@
 @import 'constants.scss';
 
 .input {
-  border: 0;
+  border: 3px solid $colorMain;
+  box-sizing: border-box;
   color: $colorMain;
   font-size: $fontSizeLg;
   font-weight: bold;
   letter-spacing: 1px;
-  transition: color $transition, background $transition;
   width: 100%;
+
+  // Make space for search icon
+  padding: $gutterMd $gutterMd $gutterMd ($gutterMd + $gutterSm + $fontSizeLg);
 
   &:focus {
     outline: none;
+    border-color: $colorSecondary;
+    color: $colorSecondary;
   }
 }
 
 .icon {
+  position: absolute;
+  top: 50%;
+  left: $gutterMd;
+  margin-top: -$fontSizeLg/2;
   width: $fontSizeLg;
   height: $fontSizeLg;
-  margin-left: $gutterMd;
   fill: $colorMain;
+
+  .input:focus + & {
+    fill: $colorSecondary;
+  }
 }
 
 .wrapper {
-  display: flex;
-  align-items: center;
-  border: 3px solid $colorMain;
-  padding: $gutterMd;
+  position: relative;
 }

@@ -1,13 +1,13 @@
 @import 'constants.scss';
 
-$imgSize: 170px;
+$flickrImgSize: 170px;
 
 .modal {
-  padding: $gutterLg;
-  height: 100vh;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  max-height: 100vh;
+  padding: $gutterLg;
 }
 
 .header {
@@ -45,8 +45,8 @@ $imgSize: 170px;
 
 .flickrResult,
 .flickrPlaceholder {
-  width: $imgSize;
-  height: $imgSize;
+  width: $flickrImgSize;
+  height: $flickrImgSize;
   margin-right: $gutterMd;
   margin-bottom: $gutterMd;
 }
@@ -59,7 +59,6 @@ $imgSize: 170px;
 
 .flickrResult {
   cursor: pointer;
-  vertical-align: middle;
 }
 
 .uploadInput {

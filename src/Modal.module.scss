@@ -11,10 +11,7 @@
   right: 0;
   bottom: 0;
 
-  // Centers contents
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include centerChildren();
 }
 
 // Background overlay
