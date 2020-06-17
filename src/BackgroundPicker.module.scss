@@ -10,6 +10,20 @@ $flickrImgSize: 170px;
   padding: $gutterLg;
 }
 
+.giphyModal {
+  position: relative; // For positioning .giphyAttribution
+}
+
+.giphyAttribution {
+  background-color: white;
+  border-top-left-radius: 5px;
+  bottom: $gutterLg;
+  padding: $gutterSm 0 0 $gutterSm;
+  position: absolute;
+  right: $gutterLg;
+  width: 50%;
+}
+
 .header {
   display: flex;
   align-items: center;

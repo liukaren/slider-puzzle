@@ -6,6 +6,7 @@ import { flickrApiCall } from './Flickr';
 import GF from './Giphy';
 import Modal from './Modal';
 import SearchInput from './SearchInput';
+import GiphyAttribution from './images/giphy-attribution.png';
 import { ReactComponent as CloseIcon } from './images/times.svg';
 import { useViewport, GUTTER_LG_PX } from './util';
 import styles from './BackgroundPicker.module.scss';
@@ -164,7 +165,7 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
   return (
     <Modal onClose={onClose}>
       <div
-        className={styles.modal}
+        className={cn(styles.modal, styles.giphyModal)}
         style={{ width: modalWidth, height: modalHeight }}>
         <div className={styles.header}>
           <SearchInput onChange={onInputChange} className={styles.search} />
@@ -181,6 +182,11 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
             />
           )}
         </div>
+        <img
+          alt="Powered by Giphy"
+          src={GiphyAttribution}
+          className={styles.giphyAttribution}
+        />
       </div>
     </Modal>
   );
