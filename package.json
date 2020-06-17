@@ -1,5 +1,6 @@
 {
   "name": "slider-puzzle",
+  "homepage": "https://liukaren.github.io/slider-puzzle",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +10,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "classnames": "^2.2.6",
+    "gh-pages": "^3.0.0",
     "node-sass": "^4.14.1",
     "querystring": "^0.2.0",
     "react": "^16.13.1",
@@ -17,6 +19,8 @@
     "tinyqueue": "^2.0.3"
   },
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

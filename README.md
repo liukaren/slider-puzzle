@@ -24,3 +24,8 @@ The shuffler uses the Fisher-Yates shuffle to permute the tiles, then checks whe
 
 - `yarn start`
 - Open [http://localhost:3000](http://localhost:3000)
+
+### Production
+
+- `yarn run build`
+- `yarn run deploy`
