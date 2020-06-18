@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ba8e9f39bd2ee94557234a6ede66cb25",
+    "revision": "91dad287b22027d55f0ac619b34c7b6f",
     "url": "/slider-puzzle/index.html"
   },
   {
-    "revision": "1a6ff07906a42763bbbe",
-    "url": "/slider-puzzle/static/css/main.cd8778aa.chunk.css"
+    "revision": "067bb6b1e1746ebdc3ef",
+    "url": "/slider-puzzle/static/css/main.40b31217.chunk.css"
   },
   {
     "revision": "307fac7b31508dbfc577",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "1a6ff07906a42763bbbe",
-    "url": "/slider-puzzle/static/js/main.04e8bada.chunk.js"
+    "revision": "067bb6b1e1746ebdc3ef",
+    "url": "/slider-puzzle/static/js/main.38d1a2ab.chunk.js"
   },
   {
     "revision": "0f786b75fc1f6689b02e",
