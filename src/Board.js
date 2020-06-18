@@ -160,6 +160,9 @@ export default function Board() {
           }),
         Promise.resolve()
       )
+      .catch(() => {
+        /* ignore errors from Stop button */
+      })
       .then(() => {
         setSolving(false);
         isSolvingRef.current = false;
