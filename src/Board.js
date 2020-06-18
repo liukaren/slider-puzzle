@@ -19,7 +19,8 @@ import {
   generateSolved,
   generateRandom,
   getGoalPosition,
-  solve
+  solve,
+  isGoal
 } from './BoardUtil';
 
 const ANIMATION_MS = 250;
@@ -54,6 +55,8 @@ export default function Board() {
 
   // Re-generate board when dimension changes
   React.useEffect(() => setBoard(generateSolved(dimension)), [dimension]);
+
+  const isSolved = React.useMemo(() => isGoal(board.tiles), [board]);
 
   // Select a random background from Giphy on load
   React.useEffect(() => {
@@ -265,9 +268,10 @@ export default function Board() {
               className={cn(styles.control, styles.main, {
                 [styles.warning]: isSolving
               })}
+              disabled={isSolved}
               onClick={isSolving ? onClickStop : onClickSolve}
               type="button">
-              {isSolving ? 'Stop' : 'Solve'}
+              {isSolving ? 'Stop' : 'Play!'}
             </Button>
           </div>
           <div className={styles.controlHeader}>Choose background</div>
