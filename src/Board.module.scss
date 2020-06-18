@@ -75,13 +75,17 @@ $breakPoint: 800px;
   margin-bottom: $gutterMd;
 }
 
+.controlMainRow {
+  display: flex;
+}
+
 .control {
   font-size: $fontSizeMd;
   margin-bottom: $gutterMd;
   @include marginRightUnlessLast($gutterMd);
   &.main {
+    flex: 1;
     height: 100px;
-    width: 180px;
     font-size: $fontSizeLg;
   }
   &.warning {
@@ -96,6 +100,7 @@ $breakPoint: 800px;
 
 .footer {
   font-size: $fontSizeXs;
+  margin-bottom: $gutterMd;
   svg {
     margin-right: 4px;
     width: $fontSizeXs;

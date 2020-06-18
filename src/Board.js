@@ -253,7 +253,7 @@ export default function Board() {
           ))}
         </div>
         <div className={styles.controls}>
-          <div>
+          <div className={styles.controlMainRow}>
             <Button
               className={cn(styles.control, styles.main)}
               disabled={isSolving}
