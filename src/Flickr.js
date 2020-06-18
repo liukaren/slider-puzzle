@@ -1,8 +1,7 @@
 import qs from 'querystring';
 
-const FLICKR_API_KEY = 'b90b439c52b6d6cc8da48b1a4eddff42';
 const REQUEST_PARAMS = {
-  api_key: FLICKR_API_KEY,
+  api_key: process.env.REACT_APP_FLICKR_API_KEY,
   format: 'json',
   nojsoncallback: 1,
   extras: ['url_z', 'url_q', 'o_dims'].join(',')
