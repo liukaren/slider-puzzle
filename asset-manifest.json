@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/slider-puzzle/static/css/main.40b31217.chunk.css",
-    "main.js": "/slider-puzzle/static/js/main.d84bb7e7.chunk.js",
-    "main.js.map": "/slider-puzzle/static/js/main.d84bb7e7.chunk.js.map",
+    "main.css": "/slider-puzzle/static/css/main.047ef2a6.chunk.css",
+    "main.js": "/slider-puzzle/static/js/main.822c1d1d.chunk.js",
+    "main.js.map": "/slider-puzzle/static/js/main.822c1d1d.chunk.js.map",
     "runtime-main.js": "/slider-puzzle/static/js/runtime-main.96e6c013.js",
     "runtime-main.js.map": "/slider-puzzle/static/js/runtime-main.96e6c013.js.map",
-    "static/js/2.3e5ff50a.chunk.js": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js",
-    "static/js/2.3e5ff50a.chunk.js.map": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js.map",
+    "static/js/2.507ca7b6.chunk.js": "/slider-puzzle/static/js/2.507ca7b6.chunk.js",
+    "static/js/2.507ca7b6.chunk.js.map": "/slider-puzzle/static/js/2.507ca7b6.chunk.js.map",
     "index.html": "/slider-puzzle/index.html",
-    "precache-manifest.ac9b3972b0181def2028e5aaa2664c35.js": "/slider-puzzle/precache-manifest.ac9b3972b0181def2028e5aaa2664c35.js",
+    "precache-manifest.015cb9b451df799c6b1b274de9390086.js": "/slider-puzzle/precache-manifest.015cb9b451df799c6b1b274de9390086.js",
     "service-worker.js": "/slider-puzzle/service-worker.js",
-    "static/css/main.40b31217.chunk.css.map": "/slider-puzzle/static/css/main.40b31217.chunk.css.map",
-    "static/js/2.3e5ff50a.chunk.js.LICENSE.txt": "/slider-puzzle/static/js/2.3e5ff50a.chunk.js.LICENSE.txt",
+    "static/css/main.047ef2a6.chunk.css.map": "/slider-puzzle/static/css/main.047ef2a6.chunk.css.map",
+    "static/js/2.507ca7b6.chunk.js.LICENSE.txt": "/slider-puzzle/static/js/2.507ca7b6.chunk.js.LICENSE.txt",
     "static/media/collapse.1f4134ee.svg": "/slider-puzzle/static/media/collapse.1f4134ee.svg",
     "static/media/expand.800d2899.svg": "/slider-puzzle/static/media/expand.800d2899.svg",
     "static/media/github.ec5bc1b3.svg": "/slider-puzzle/static/media/github.ec5bc1b3.svg",
@@ -25,8 +25,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.96e6c013.js",
-    "static/js/2.3e5ff50a.chunk.js",
-    "static/css/main.40b31217.chunk.css",
-    "static/js/main.d84bb7e7.chunk.js"
+    "static/js/2.507ca7b6.chunk.js",
+    "static/css/main.047ef2a6.chunk.css",
+    "static/js/main.822c1d1d.chunk.js"
   ]
 }
