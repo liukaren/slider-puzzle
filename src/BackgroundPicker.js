@@ -11,13 +11,11 @@ import { ReactComponent as CloseIcon } from './images/times.svg';
 import { useViewport, GUTTER_LG_PX } from './util';
 import styles from './BackgroundPicker.module.scss';
 
-const DEBOUNCE_MS = 500;
 const MAX_WIDTH_PX = 600;
 const HEIGHT_PX = 600;
 const FETCH_LIMIT = 21;
 
 function FlickrBackgroundPicker({ setBackground, onClose }) {
-  const [debounceTimer, setDebounceTimeout] = React.useState(null);
   const [photos, setPhotos] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
@@ -58,16 +56,6 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
     });
   }, []);
 
-  const onInputChange = React.useCallback(
-    e => {
-      const searchTerm = e.target.value;
-      clearTimeout(debounceTimer);
-      const timer = setTimeout(() => searchRequest(searchTerm), DEBOUNCE_MS);
-      setDebounceTimeout(timer);
-    },
-    [debounceTimer, searchRequest]
-  );
-
   const windowWidth = useViewport().width;
   const modalWidth = Math.min(MAX_WIDTH_PX, windowWidth);
   // If the modal fills the width, then also fill the height
@@ -79,7 +67,10 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
         className={styles.modal}
         style={{ width: modalWidth, height: modalHeight }}>
         <div className={styles.header}>
-          <SearchInput onChange={onInputChange} className={styles.search} />
+          <SearchInput
+            searchRequest={searchRequest}
+            className={styles.search}
+          />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />
         </div>
         <div className={cn(styles.modalResults, styles.flickrResults)}>
@@ -118,7 +109,6 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
 function GiphyBackgroundPicker({ setBackground, onClose }) {
   const [search, setSearch] = React.useState(null);
   const [showResults, setShowResults] = React.useState(true);
-  const [debounceTimer, setDebounceTimeout] = React.useState(null);
 
   const fetchGifs = React.useCallback(
     offset => {
@@ -146,16 +136,6 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
     setTimeout(() => setShowResults(true), 1);
   }, []);
 
-  const onInputChange = React.useCallback(
-    e => {
-      const searchTerm = e.target.value;
-      clearTimeout(debounceTimer);
-      const timer = setTimeout(() => searchRequest(searchTerm), DEBOUNCE_MS);
-      setDebounceTimeout(timer);
-    },
-    [debounceTimer, searchRequest]
-  );
-
   const windowWidth = useViewport().width;
   const modalWidth = Math.min(MAX_WIDTH_PX, windowWidth);
   const gridWidth = Math.min(MAX_WIDTH_PX, windowWidth) - GUTTER_LG_PX * 2;
@@ -168,7 +148,10 @@ function GiphyBackgroundPicker({ setBackground, onClose }) {
         className={cn(styles.modal, styles.giphyModal)}
         style={{ width: modalWidth, height: modalHeight }}>
         <div className={styles.header}>
-          <SearchInput onChange={onInputChange} className={styles.search} />
+          <SearchInput
+            searchRequest={searchRequest}
+            className={styles.search}
+          />
           <CloseIcon onClick={onClose} className={styles.closeIcon} />
         </div>
         <div className={styles.modalResults}>
