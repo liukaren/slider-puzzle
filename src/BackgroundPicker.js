@@ -8,7 +8,7 @@ import Modal from './Modal';
 import SearchInput from './SearchInput';
 import GiphyAttribution from './images/giphy-attribution.png';
 import { ReactComponent as CloseIcon } from './images/times.svg';
-import { useViewport, GUTTER_LG_PX } from './util';
+import { useViewport, GUTTER_MD_PX, GUTTER_LG_PX } from './util';
 import styles from './BackgroundPicker.module.scss';
 
 const MAX_WIDTH_PX = 600;
@@ -61,6 +61,12 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
   // If the modal fills the width, then also fill the height
   const modalHeight = windowWidth > MAX_WIDTH_PX ? HEIGHT_PX : '100vh';
 
+  const imgSize = (modalWidth - GUTTER_LG_PX * 2 - GUTTER_MD_PX * 2) / 3; // 3 to a row
+  const sizeStyle = { width: imgSize, height: imgSize };
+  const placeholderEl = (
+    <div className={styles.flickrPlaceholder} style={sizeStyle} />
+  );
+
   return (
     <Modal onClose={onClose}>
       <div
@@ -77,12 +83,12 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
           {/* Loading state */}
           {loading && (
             <>
-              <div className={styles.flickrPlaceholder} />
-              <div className={styles.flickrPlaceholder} />
-              <div className={styles.flickrPlaceholder} />
-              <div className={styles.flickrPlaceholder} />
-              <div className={styles.flickrPlaceholder} />
-              <div className={styles.flickrPlaceholder} />
+              {placeholderEl}
+              {placeholderEl}
+              {placeholderEl}
+              {placeholderEl}
+              {placeholderEl}
+              {placeholderEl}
             </>
           )}
           {/* Loaded state */}
@@ -96,6 +102,7 @@ function FlickrBackgroundPicker({ setBackground, onClose }) {
                 key={photo.id}
                 onClick={() => onSelect(photo)}
                 src={photo.url_q}
+                style={sizeStyle}
               />
             ))}
           {/* Empty state */}

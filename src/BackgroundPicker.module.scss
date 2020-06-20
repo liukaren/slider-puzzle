@@ -1,7 +1,5 @@
 @import 'constants.scss';
 
-$flickrImgSize: 170px;
-
 .modal {
   box-sizing: border-box;
   display: flex;
@@ -59,8 +57,6 @@ $flickrImgSize: 170px;
 
 .flickrResult,
 .flickrPlaceholder {
-  width: $flickrImgSize;
-  height: $flickrImgSize;
   margin-right: $gutterMd;
   margin-bottom: $gutterMd;
 }
