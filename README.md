@@ -17,7 +17,7 @@ The shuffler uses the Fisher-Yates shuffle to permute the tiles, then checks whe
 - [Giphy SDK](https://developers.giphy.com/docs/sdk/#web)
 - [Flickr API](https://www.flickr.com/services/api/)
 - [Font Awesome](https://fontawesome.com/license) icons
-- [Open Game Art](https://opengameart.org/content/87-clickety-clips) sound effect
+- [Open Game Art](https://opengameart.org/content/ui-soundpack-by-m1chiboi-bleeps-and-clicks) sound effect
 
 ### Development
 
