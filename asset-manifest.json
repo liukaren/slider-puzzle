@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/slider-puzzle/static/css/main.047ef2a6.chunk.css",
-    "main.js": "/slider-puzzle/static/js/main.822c1d1d.chunk.js",
-    "main.js.map": "/slider-puzzle/static/js/main.822c1d1d.chunk.js.map",
+    "main.js": "/slider-puzzle/static/js/main.f51ab469.chunk.js",
+    "main.js.map": "/slider-puzzle/static/js/main.f51ab469.chunk.js.map",
     "runtime-main.js": "/slider-puzzle/static/js/runtime-main.96e6c013.js",
     "runtime-main.js.map": "/slider-puzzle/static/js/runtime-main.96e6c013.js.map",
     "static/js/2.507ca7b6.chunk.js": "/slider-puzzle/static/js/2.507ca7b6.chunk.js",
     "static/js/2.507ca7b6.chunk.js.map": "/slider-puzzle/static/js/2.507ca7b6.chunk.js.map",
     "index.html": "/slider-puzzle/index.html",
-    "precache-manifest.015cb9b451df799c6b1b274de9390086.js": "/slider-puzzle/precache-manifest.015cb9b451df799c6b1b274de9390086.js",
+    "precache-manifest.f676917f43c1bd2af513fa8fc42e945d.js": "/slider-puzzle/precache-manifest.f676917f43c1bd2af513fa8fc42e945d.js",
     "service-worker.js": "/slider-puzzle/service-worker.js",
     "static/css/main.047ef2a6.chunk.css.map": "/slider-puzzle/static/css/main.047ef2a6.chunk.css.map",
     "static/js/2.507ca7b6.chunk.js.LICENSE.txt": "/slider-puzzle/static/js/2.507ca7b6.chunk.js.LICENSE.txt",
@@ -27,6 +27,6 @@
     "static/js/runtime-main.96e6c013.js",
     "static/js/2.507ca7b6.chunk.js",
     "static/css/main.047ef2a6.chunk.css",
-    "static/js/main.822c1d1d.chunk.js"
+    "static/js/main.f51ab469.chunk.js"
   ]
 }
